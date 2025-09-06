@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, Clock, ArrowRight } from "lucide-react";
+import { CalendarDays, Clock, ArrowRight, Filter, X } from "lucide-react";
 
 interface BlogPost {
   id: string;
@@ -18,8 +19,20 @@ interface BlogPost {
 }
 
 export default function Blog() {
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  
   const { data: posts, isLoading } = useQuery<BlogPost[]>({
-    queryKey: ["/api/blog"],
+    queryKey: ["/api/blog", selectedTag],
+    queryFn: async () => {
+      const url = selectedTag ? `/api/blog?tag=${encodeURIComponent(selectedTag)}` : '/api/blog';
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Failed to fetch posts');
+      return response.json();
+    }
+  });
+  
+  const { data: allTags } = useQuery<string[]>({
+    queryKey: ["/api/blog-tags"],
   });
 
   if (isLoading) {
@@ -54,9 +67,55 @@ export default function Blog() {
           <h1 className="text-4xl font-bold font-serif text-primary mb-4">
             Blog Âm Lịch Việt
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-muted-foreground mb-6">
             Khám phá những bài viết về văn hóa, truyền thống và tâm linh Việt Nam
           </p>
+          
+          {/* Tags Filter */}
+          {allTags && allTags.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Filter className="h-4 w-4" />
+                <span>Lọc theo chủ đề:</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant={selectedTag === null ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedTag(null)}
+                  data-testid="filter-all"
+                >
+                  Tất cả
+                </Button>
+                {allTags.map((tag) => (
+                  <Button
+                    key={tag}
+                    variant={selectedTag === tag ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedTag(tag)}
+                    data-testid={`filter-tag-${tag.toLowerCase().replace(" ", "-")}`}
+                    className="relative"
+                  >
+                    {tag}
+                    {selectedTag === tag && (
+                      <X className="h-3 w-3 ml-1" onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedTag(null);
+                      }} />
+                    )}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {selectedTag && (
+            <div className="text-center mb-6">
+              <Badge variant="secondary" className="text-sm">
+                Hiển thị bài viết có chủ đề: {selectedTag}
+              </Badge>
+            </div>
+          )}
         </div>
 
         <div className="space-y-8">
@@ -114,8 +173,21 @@ export default function Blog() {
         {posts?.length === 0 && (
           <div className="text-center py-12">
             <p className="text-lg text-muted-foreground">
-              Chưa có bài viết nào. Hãy quay lại sau!
+              {selectedTag 
+                ? `Không có bài viết nào với chủ đề "${selectedTag}". Hãy thử chọn chủ đề khác!`
+                : "Chưa có bài viết nào. Hãy quay lại sau!"
+              }
             </p>
+            {selectedTag && (
+              <Button 
+                variant="outline" 
+                className="mt-4"
+                onClick={() => setSelectedTag(null)}
+                data-testid="button-clear-filter"
+              >
+                Xem tất cả bài viết
+              </Button>
+            )}
           </div>
         )}
       </div>
