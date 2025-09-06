@@ -84,10 +84,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Blog routes
   app.get("/api/blog", async (req, res) => {
     try {
-      const posts = await storage.getAllBlogPosts();
+      const { tag } = req.query;
+      const posts = await storage.getAllBlogPosts(tag as string);
       res.json(posts);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch blog posts" });
+    }
+  });
+  
+  app.get("/api/blog-tags", async (req, res) => {
+    try {
+      const tags = await storage.getAllBlogTags();
+      res.json(tags);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch blog tags" });
     }
   });
 

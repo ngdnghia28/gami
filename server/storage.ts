@@ -15,9 +15,10 @@ export interface IStorage {
   createFestival(festival: InsertFestival): Promise<Festival>;
   createAstrologyReading(reading: InsertAstrologyReading): Promise<AstrologyReading>;
   getAstrologyReading(id: string): Promise<AstrologyReading | undefined>;
-  getAllBlogPosts(): Promise<BlogPost[]>;
+  getAllBlogPosts(tagFilter?: string): Promise<BlogPost[]>;
   getBlogPost(id: string): Promise<BlogPost | undefined>;
   createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  getAllBlogTags(): Promise<string[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -106,10 +107,19 @@ export class MemStorage implements IStorage {
     return this.astrologyReadings.get(id);
   }
 
-  async getAllBlogPosts(): Promise<BlogPost[]> {
-    return Array.from(this.blogPosts.values())
-      .filter(post => post.isPublished)
-      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+  async getAllBlogPosts(tagFilter?: string): Promise<BlogPost[]> {
+    let posts = Array.from(this.blogPosts.values())
+      .filter(post => post.isPublished);
+    
+    if (tagFilter) {
+      posts = posts.filter(post => 
+        post.tags.some(tag => 
+          tag.toLowerCase().includes(tagFilter.toLowerCase())
+        )
+      );
+    }
+    
+    return posts.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
   }
 
   async getBlogPost(id: string): Promise<BlogPost | undefined> {
@@ -128,6 +138,16 @@ export class MemStorage implements IStorage {
     };
     this.blogPosts.set(id, post);
     return post;
+  }
+
+  async getAllBlogTags(): Promise<string[]> {
+    const allTags = new Set<string>();
+    Array.from(this.blogPosts.values())
+      .filter(post => post.isPublished)
+      .forEach(post => {
+        post.tags.forEach(tag => allTags.add(tag));
+      });
+    return Array.from(allTags).sort();
   }
 
   private initializeSampleBlogPosts() {
