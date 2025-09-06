@@ -29,7 +29,7 @@ export default function LunarCalendar() {
   return (
     <section className="min-h-screen py-20 bg-muted">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+        <div className="hidden md:block text-center mb-12">
           <h2 className="text-3xl font-bold font-serif mb-4">
             Lịch Âm Tháng {currentDate.getMonth() + 1} Năm {currentDate.getFullYear()}
           </h2>
