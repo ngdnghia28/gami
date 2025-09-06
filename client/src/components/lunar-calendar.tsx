@@ -32,7 +32,7 @@ export default function LunarCalendar() {
         </div>
 
         {/* Calendar Header */}
-        <Card className="p-3 md:p-6 mb-8">
+        <Card className="p-2 sm:p-4 md:p-6 mb-8">
           <CardContent className="pt-6">
             <div className="flex justify-between items-center mb-6">
               <Button
@@ -64,12 +64,12 @@ export default function LunarCalendar() {
             </div>
 
             {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-2">
+            <div className="grid grid-cols-7 gap-1 sm:gap-2">
               {/* Day Headers */}
               {dayHeaders.map((day) => (
                 <div
                   key={day}
-                  className={`text-center p-3 font-semibold ${
+                  className={`text-center p-2 sm:p-3 font-semibold ${
                     day === 'CN' || day === 'T7' ? 'text-primary' : ''
                   }`}
                 >
@@ -81,14 +81,14 @@ export default function LunarCalendar() {
               {calendarDays.map((day, index) => (
                 <div
                   key={index}
-                  className={`lunar-day border border-border rounded-lg p-3 text-center cursor-pointer hover:bg-accent/10 ${
+                  className={`lunar-day border border-border rounded-lg p-1 sm:p-2 md:p-3 text-center cursor-pointer hover:bg-accent/10 min-h-[80px] sm:min-h-[90px] md:min-h-[100px] ${
                     day.isToday ? 'bg-primary text-primary-foreground border-primary' : 'bg-background'
                   } ${day.isCurrentMonth ? '' : 'opacity-50'}`}
                   data-testid={`calendar-day-${day.date}`}
                 >
-                  <div className="text-lg font-semibold">{day.date}</div>
-                  <div className="text-xs text-muted-foreground">{day.lunarDay}</div>
-                  <div className="text-xs text-secondary">{day.zodiacAnimal}</div>
+                  <div className="text-base sm:text-lg font-semibold mb-1">{day.date}</div>
+                  <div className="text-[10px] sm:text-xs md:text-sm text-muted-foreground leading-tight mb-1">{day.lunarDay}</div>
+                  <div className="text-[10px] sm:text-xs text-secondary leading-tight">{day.zodiacAnimal}</div>
                 </div>
               ))}
             </div>

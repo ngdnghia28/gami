@@ -45,7 +45,7 @@ export function generateCalendarDays(currentDate: Date): CalendarDay[] {
     days.push({
       date,
       lunarDay: lunarInfo.lunarDay,
-      zodiacAnimal: ZODIAC_ANIMALS[date % 12],
+      zodiacAnimal: lunarInfo.canChi,
       isToday: false,
       isCurrentMonth: false
     });
@@ -61,7 +61,7 @@ export function generateCalendarDays(currentDate: Date): CalendarDay[] {
     days.push({
       date,
       lunarDay: lunarInfo.lunarDay,
-      zodiacAnimal: ZODIAC_ANIMALS[(date - 1) % 12],
+      zodiacAnimal: lunarInfo.canChi,
       isToday,
       isCurrentMonth: true
     });
@@ -74,7 +74,7 @@ export function generateCalendarDays(currentDate: Date): CalendarDay[] {
     days.push({
       date,
       lunarDay: lunarInfo.lunarDay,
-      zodiacAnimal: ZODIAC_ANIMALS[date % 12],
+      zodiacAnimal: lunarInfo.canChi,
       isToday: false,
       isCurrentMonth: false
     });
