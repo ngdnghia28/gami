@@ -104,7 +104,7 @@ export default function Navigation() {
                 >
                   <Icon className="h-5 w-5 text-gray-400 dark:text-gray-600" />
                   <span className="text-xs mt-1 text-gray-400 dark:text-gray-600">
-                    {item.shortName}
+                    {item.mobileName || item.shortName}
                   </span>
                 </div>
               );
@@ -139,7 +139,7 @@ export default function Navigation() {
                         : "text-gray-500 dark:text-gray-400"
                   }`}
                 >
-                  {item.shortName}
+                  {item.mobileName || item.shortName}
                 </span>
               </Link>
             );
