@@ -32,7 +32,7 @@ export default function LunarCalendar() {
         </div>
 
         {/* Calendar Header */}
-        <Card className="p-2 sm:p-4 md:p-6 mb-8">
+        <Card className="p-4 md:p-6 mb-8">
           <CardContent className="pt-6">
             <div className="flex justify-between items-center mb-6">
               <Button
@@ -81,14 +81,14 @@ export default function LunarCalendar() {
               {calendarDays.map((day, index) => (
                 <div
                   key={index}
-                  className={`lunar-day border border-border rounded-lg p-1 sm:p-2 md:p-3 text-center cursor-pointer hover:bg-accent/10 min-h-[80px] sm:min-h-[90px] md:min-h-[100px] ${
+                  className={`lunar-day border border-border rounded-lg p-2 md:p-3 text-center cursor-pointer hover:bg-accent/10 min-h-[60px] md:min-h-[100px] ${
                     day.isToday ? 'bg-primary text-primary-foreground border-primary' : 'bg-background'
                   } ${day.isCurrentMonth ? '' : 'opacity-50'}`}
                   data-testid={`calendar-day-${day.date}`}
                 >
-                  <div className="text-base sm:text-lg font-semibold mb-1">{day.date}</div>
-                  <div className="text-[10px] sm:text-xs md:text-sm text-muted-foreground leading-tight mb-1">{day.lunarDay}</div>
-                  <div className="text-[10px] sm:text-xs text-secondary leading-tight">{day.zodiacAnimal}</div>
+                  <div className="text-lg font-semibold mb-1">{day.date}</div>
+                  <div className="hidden md:block text-xs text-muted-foreground leading-tight mb-1">{day.lunarDay}</div>
+                  <div className="hidden md:block text-xs text-secondary leading-tight">{day.zodiacAnimal}</div>
                 </div>
               ))}
             </div>
