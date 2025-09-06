@@ -16,15 +16,17 @@ function Router() {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/calendar" component={Calendar} />
-        <Route path="/astrology" component={Astrology} />
-        <Route path="/zodiac" component={Zodiac} />
-        <Route path="/numerology" component={Numerology} />
-        <Route component={NotFound} />
-      </Switch>
-      <Footer />
+      <div className="pb-20 md:pb-0">
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/calendar" component={Calendar} />
+          <Route path="/astrology" component={Astrology} />
+          <Route path="/zodiac" component={Zodiac} />
+          <Route path="/numerology" component={Numerology} />
+          <Route component={NotFound} />
+        </Switch>
+        <Footer />
+      </div>
     </div>
   );
 }

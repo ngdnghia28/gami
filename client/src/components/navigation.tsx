@@ -8,7 +8,7 @@ export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigation = [
-    { name: "Trang Chủ", href: "/", icon: Home, shortName: "Trang chủ" },
+    { name: "Trang Chủ", href: "/", icon: Home, shortName: "Sửa" },
     { name: "Hình dạng", href: "/zodiac", icon: Sparkles, shortName: "Hình dạng" },
     { name: "Âm lịch", href: "/calendar", icon: Calendar, shortName: "Mặt" },
     { name: "Rufus", href: "/astrology", icon: Star, shortName: "Rufus" },
