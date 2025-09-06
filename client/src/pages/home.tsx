@@ -43,7 +43,7 @@ export default function Home() {
     <main>
       {/* Hero Section */}
       <section className="relative overflow-hidden vietnamese-pattern">
-        <div className="max-w-7xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 py-12 md:py-20 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold font-serif mb-6">
               <span className="text-primary">Âm Lịch</span>{" "}
@@ -76,7 +76,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-muted">
+      <section className="py-12 md:py-20 bg-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-12 font-serif">Tính Năng Chính</h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -120,7 +120,7 @@ export default function Home() {
       </section>
 
       {/* Traditional Festivals Preview */}
-      <section className="py-20">
+      <section className="py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-12 font-serif">Lễ Hội Truyền Thống</h2>
           <div className="grid md:grid-cols-4 gap-6">

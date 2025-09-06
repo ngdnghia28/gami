@@ -27,7 +27,7 @@ export default function LunarCalendar() {
   const dayHeaders = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
   return (
-    <section className="min-h-screen py-20 bg-muted">
+    <section className="min-h-screen py-8 md:py-20 bg-muted">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-6 md:mb-12">
           <h2 className="text-xl md:text-3xl font-bold font-serif mb-2 md:mb-4">

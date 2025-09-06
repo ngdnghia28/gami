@@ -195,7 +195,7 @@ export default function Zodiac() {
   });
 
   return (
-    <main className="min-h-screen py-20 bg-muted">
+    <main className="min-h-screen py-8 md:py-20 bg-muted">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold font-serif mb-4">12 Cung Hoàng Đạo</h1>
