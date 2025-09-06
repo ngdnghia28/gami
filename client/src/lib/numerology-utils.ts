@@ -165,7 +165,7 @@ function getLuckyNumbers(lifePathNumber: number, expressionNumber: number, perso
   luckyNumbers.push((lifePathNumber + personalityNumber) % 9 + 1);
   
   // Remove duplicates and sort
-  return [...new Set(luckyNumbers)].sort((a, b) => a - b);
+  return Array.from(new Set(luckyNumbers)).sort((a, b) => a - b);
 }
 
 function getChallenges(lifePathNumber: number): string[] {
