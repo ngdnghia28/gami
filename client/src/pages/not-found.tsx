@@ -1,7 +1,16 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
+import { useSEO } from "@/hooks/use-seo";
 
 export default function NotFound() {
+  useSEO({
+    title: "Trang Không Tồn Tại - 404 - Âm Lịch Việt Nam",
+    description: "Trang bạn đang tìm kiếm không tồn tại. Quay về trang chủ để khám phá âm lịch Việt Nam và các tính năng hữu ích.",
+    canonical: "https://am-lich-viet-nam.replit.app/404",
+    ogTitle: "Trang Không Tồn Tại - 404",
+    ogDescription: "Trang bạn đang tìm kiếm không tồn tại. Quay về trang chủ để khám phá âm lịch Việt Nam."
+  });
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
       <Card className="w-full max-w-md mx-4">

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CalendarDays, Clock, ArrowLeft, User } from "lucide-react";
+import { useSEO } from "@/hooks/use-seo";
 
 interface BlogPost {
   id: string;
@@ -25,6 +26,33 @@ export default function BlogPost() {
   const { data: post, isLoading, error } = useQuery<BlogPost>({
     queryKey: ["/api/blog", postId],
     enabled: !!postId,
+  });
+
+  // Dynamic SEO based on post data
+  useSEO({
+    title: post ? `${post.title} - Blog Âm Lịch Việt` : "Bài Viết - Blog Âm Lịch Việt",
+    description: post ? post.excerpt : "Khám phá bài viết về văn hóa và truyền thống Việt Nam",
+    keywords: post ? `${post.tags.join(", ")}, âm lịch việt nam, văn hóa, truyền thống` : "âm lịch, văn hóa việt nam",
+    canonical: `https://am-lich-viet-nam.replit.app/blog/${postId}`,
+    ogTitle: post ? `${post.title} - Blog Âm Lịch Việt` : "Bài Viết - Blog Âm Lịch Việt",
+    ogDescription: post ? post.excerpt : "Khám phá bài viết về văn hóa và truyền thống Việt Nam",
+    ogType: "article",
+    ogUrl: `https://am-lich-viet-nam.replit.app/blog/${postId}`,
+    structuredData: post ? {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": post.title,
+      "description": post.excerpt,
+      "author": {
+        "@type": "Person",
+        "name": post.author
+      },
+      "datePublished": post.publishedAt,
+      "articleSection": post.category,
+      "keywords": post.tags.join(", "),
+      "url": `https://am-lich-viet-nam.replit.app/blog/${postId}`,
+      "inLanguage": "vi-VN"
+    } : undefined
   });
 
   if (isLoading) {

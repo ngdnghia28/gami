@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CalendarDays, Clock, ArrowRight, Filter, X } from "lucide-react";
+import { useSEO } from "@/hooks/use-seo";
 
 interface BlogPost {
   id: string;
@@ -20,6 +21,24 @@ interface BlogPost {
 
 export default function Blog() {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  
+  useSEO({
+    title: "Blog Âm Lịch Việt - Bài Viết Về Văn Hóa Truyền Thống Việt Nam",
+    description: "Khám phá những bài viết về âm lịch, văn hóa, truyền thống và tâm linh Việt Nam. Tìm hiểu kiến thức về phong thủy, 12 con giáp và các lễ hội truyền thống.",
+    keywords: "blog âm lịch, văn hóa việt nam, truyền thống, tâm linh, phong thủy, 12 con giáp, lễ hội, can chi",
+    canonical: "https://am-lich-viet-nam.replit.app/blog",
+    ogTitle: "Blog Âm Lịch Việt - Bài Viết Về Văn Hóa Việt Nam",
+    ogDescription: "Khám phá những bài viết về âm lịch, văn hóa, truyền thống và tâm linh Việt Nam. Tìm hiểu kiến thức về phong thủy, 12 con giáp và các lễ hội truyền thống.",
+    ogUrl: "https://am-lich-viet-nam.replit.app/blog",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "Blog Âm Lịch Việt",
+      "description": "Blog về âm lịch và văn hóa truyền thống Việt Nam",
+      "url": "https://am-lich-viet-nam.replit.app/blog",
+      "inLanguage": "vi-VN"
+    }
+  });
   
   const { data: posts, isLoading } = useQuery<BlogPost[]>({
     queryKey: ["/api/blog", selectedTag],

@@ -3,8 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { User, Mail, Calendar, Settings, Star, BookOpen } from "lucide-react";
+import { useSEO } from "@/hooks/use-seo";
 
 export default function Account() {
+  useSEO({
+    title: "Tài Khoản - Âm Lịch Việt Nam",
+    description: "Quản lý thông tin cá nhân và cài đặt tài khoản trên ứng dụng âm lịch Việt Nam. Theo dõi hoạt động và thiết lập cá nhân hóa.",
+    keywords: "tài khoản, thông tin cá nhân, cài đặt, hồ sơ người dùng",
+    canonical: "https://am-lich-viet-nam.replit.app/account",
+    ogTitle: "Tài Khoản - Âm Lịch Việt Nam",
+    ogDescription: "Quản lý thông tin cá nhân và cài đặt tài khoản trên ứng dụng âm lịch Việt Nam.",
+    ogUrl: "https://am-lich-viet-nam.replit.app/account"
+  });
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">

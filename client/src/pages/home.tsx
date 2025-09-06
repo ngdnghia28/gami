@@ -3,8 +3,42 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, ArrowUpDown, Star } from "lucide-react";
 import { Link } from "wouter";
 import { festivals } from "@/data/festivals";
+import { useSEO } from "@/hooks/use-seo";
 
 export default function Home() {
+  useSEO({
+    title: "Âm Lịch Việt Nam - Khám Phá Truyền Thống Văn Hóa Việt",
+    description: "Khám phá âm lịch Việt Nam với công cụ chuyển đổi lịch dương âm, xem tử vi, thần số học và 12 cung hoàng đạo. Tìm hiểu truyền thống văn hóa và lễ hội Việt Nam.",
+    keywords: "âm lịch việt nam, chuyển đổi lịch, tử vi, thần số học, cung hoàng đạo, văn hóa việt nam, lễ hội truyền thống, can chi, phong thủy",
+    canonical: "https://am-lich-viet-nam.replit.app/",
+    ogTitle: "Âm Lịch Việt Nam - Khám Phá Truyền Thống Văn Hóa Việt",
+    ogDescription: "Khám phá âm lịch Việt Nam với công cụ chuyển đổi lịch dương âm, xem tử vi, thần số học và 12 cung hoàng đạo. Tìm hiểu truyền thống văn hóa và lễ hội Việt Nam.",
+    ogUrl: "https://am-lich-viet-nam.replit.app/",
+    twitterTitle: "Âm Lịch Việt Nam - Khám Phá Truyền Thống Văn Hóa Việt",
+    twitterDescription: "Khám phá âm lịch Việt Nam với công cụ chuyển đổi lịch dương âm, xem tử vi, thần số học và 12 cung hoàng đạo.",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Âm Lịch Việt Nam",
+      "description": "Ứng dụng âm lịch Việt Nam với các tính năng chuyển đổi lịch, tử vi, thần số học và cung hoàng đạo",
+      "url": "https://am-lich-viet-nam.replit.app",
+      "applicationCategory": "LifestyleApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "VND"
+      },
+      "featureList": [
+        "Chuyển đổi lịch dương âm",
+        "Xem lá số tử vi",
+        "Tính toán thần số học",
+        "Thông tin 12 cung hoàng đạo",
+        "Lịch các lễ hội truyền thống"
+      ]
+    }
+  });
+
   return (
     <main>
       {/* Hero Section */}

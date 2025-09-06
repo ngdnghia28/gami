@@ -8,8 +8,26 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Star, Heart, Target, Users, AlertTriangle, Trophy } from "lucide-react";
 import { calculateNumerology, type BirthInfo, type NumerologyResult } from "@/lib/numerology-utils";
+import { useSEO } from "@/hooks/use-seo";
 
 export default function Numerology() {
+  useSEO({
+    title: "Thần Số Học Online - Tính Toán Số Định Mệnh Miễn Phí",
+    description: "Tính toán thần số học online miễn phí theo họ tên và ngày sinh. Khám phá số đường đời, số biểu hiện, tính cách và vận mệnh qua thần số học.",
+    keywords: "thần số học, số định mệnh, số đường đời, numerology, tính cách theo số, vận mệnh, tính toán thần số",
+    canonical: "https://am-lich-viet-nam.replit.app/numerology",
+    ogTitle: "Thần Số Học Online - Tính Toán Số Định Mệnh",
+    ogDescription: "Tính toán thần số học online miễn phí theo họ tên và ngày sinh. Khám phá số đường đời, số biểu hiện, tính cách và vận mệnh qua thần số học.",
+    ogUrl: "https://am-lich-viet-nam.replit.app/numerology",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Thần Số Học Online",
+      "description": "Tính toán thần số học và số định mệnh theo họ tên và ngày sinh",
+      "url": "https://am-lich-viet-nam.replit.app/numerology"
+    }
+  });
+
   const [birthInfo, setBirthInfo] = useState({
     day: '',
     month: '',

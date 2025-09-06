@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Calendar, Heart, Briefcase } from "lucide-react";
+import { useSEO } from "@/hooks/use-seo";
 
 interface ZodiacSign {
   name: string;
@@ -176,6 +177,23 @@ const zodiacSigns: ZodiacSign[] = [
 ];
 
 export default function Zodiac() {
+  useSEO({
+    title: "12 Cung Hoàng Đạo - Tính Cách Và Vận Mệnh Theo Ngày Sinh",
+    description: "Khám phá 12 cung hoàng đạo và tính cách của bạn. Xem đặc điểm tính cách, tình yêu, sự nghiệp, số may mắn và màu sắc theo cung hoàng đạo.",
+    keywords: "12 cung hoàng đạo, zodiac, cung hoàng đạo, tính cách theo cung, vận mệnh, bạch dương, kim ngưu, song tử, cự giải, sư tử, xử nữ",
+    canonical: "https://am-lich-viet-nam.replit.app/zodiac",
+    ogTitle: "12 Cung Hoàng Đạo - Tính Cách Và Vận Mệnh",
+    ogDescription: "Khám phá 12 cung hoàng đạo và tính cách của bạn. Xem đặc điểm tính cách, tình yêu, sự nghiệp, số may mắn và màu sắc theo cung hoàng đạo.",
+    ogUrl: "https://am-lich-viet-nam.replit.app/zodiac",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "12 Cung Hoàng Đạo",
+      "description": "Thông tin chi tiết về 12 cung hoàng đạo và tính cách theo ngày sinh",
+      "url": "https://am-lich-viet-nam.replit.app/zodiac"
+    }
+  });
+
   return (
     <main className="min-h-screen py-20 bg-muted">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
