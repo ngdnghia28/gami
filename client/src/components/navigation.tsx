@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Calendar, Menu, X } from "lucide-react";
+import { Calendar, Menu, X, Home, Star, Sparkles, Calculator } from "lucide-react";
 
 export default function Navigation() {
   const [location] = useLocation();
