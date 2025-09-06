@@ -29,15 +29,15 @@ export default function LunarCalendar() {
   return (
     <section className="min-h-screen py-20 bg-muted">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="hidden md:block text-center mb-12">
-          <h2 className="text-3xl font-bold font-serif mb-4">
+        <div className="text-center mb-6 md:mb-12">
+          <h2 className="text-xl md:text-3xl font-bold font-serif mb-2 md:mb-4">
             Lịch Âm Tháng {currentDate.getMonth() + 1} Năm {currentDate.getFullYear()}
           </h2>
-          <p className="text-muted-foreground">Tháng {currentDate.getMonth() + 1} âm lịch - Năm Giáp Thìn</p>
+          <p className="text-sm md:text-base text-muted-foreground">Tháng {currentDate.getMonth() + 1} âm lịch - Năm Giáp Thìn</p>
         </div>
 
         {/* Today's Information - Mobile: Before calendar, Desktop: Before calendar */}
-        <div className="block md:hidden mb-8">
+        <div className="block md:hidden mb-4">
           <Card className="p-4">
             <CardContent className="pt-6">
               <h3 className="text-xl font-semibold mb-4 font-serif">Thông Tin Hôm Nay</h3>
@@ -78,7 +78,7 @@ export default function LunarCalendar() {
         </div>
 
         {/* Desktop: Both sections before calendar */}
-        <div className="hidden md:grid md:grid-cols-2 gap-8 mb-8">
+        <div className="hidden md:grid md:grid-cols-2 gap-8 mb-6">
           <Card className="p-6">
             <CardContent className="pt-6">
               <h3 className="text-xl font-semibold mb-4 font-serif">Thông Tin Hôm Nay</h3>
@@ -145,7 +145,7 @@ export default function LunarCalendar() {
         </div>
 
         {/* Calendar Header */}
-        <Card className="p-2 md:p-6 mb-4 md:mb-8">
+        <Card className="p-2 md:p-6 mb-4 md:mb-6">
           <CardContent className="pt-6">
             <div className="flex justify-between items-center mb-6">
               <Button
