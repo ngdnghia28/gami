@@ -27,7 +27,7 @@ export default function Navigation() {
             </Link>
             
             <div className="flex space-x-8">
-              {navigation.map((item) => (
+              {navigation.filter(item => !item.disabled).map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
@@ -53,6 +53,22 @@ export default function Navigation() {
             const Icon = item.icon;
             const isActive = location === item.href;
             const isCenter = index === 2; // Center item (Âm lịch)
+            const isDisabled = item.disabled;
+            
+            if (isDisabled) {
+              return (
+                <div
+                  key={item.name}
+                  className="flex flex-col items-center justify-center flex-1 py-2 px-1 opacity-30"
+                  data-testid={`mobile-nav-disabled-${item.name.toLowerCase().replace(" ", "-")}`}
+                >
+                  <Icon className="h-5 w-5 text-gray-400 dark:text-gray-600" />
+                  <span className="text-xs mt-1 text-gray-400 dark:text-gray-600">
+                    {item.shortName}
+                  </span>
+                </div>
+              );
+            }
             
             return (
               <Link
