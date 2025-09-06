@@ -114,6 +114,104 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Server-side rendering cho SEO - PHẢI ĐẶT TRƯỚC static middleware trong index.ts
+  app.get("/blog/:id", async (req, res, next) => {
+    const userAgent = req.get('User-Agent') || '';
+    const isCrawler = /bot|crawler|spider|facebook|twitter|linkedin|whatsapp|googlebot|bingbot/i.test(userAgent);
+    
+    if (!isCrawler) {
+      // Người dùng thật -> chuyển cho static middleware xử lý
+      return next();
+    }
+    
+    // Bot crawler -> render HTML với SEO
+    try {
+      const { id } = req.params;
+      const post = await storage.getBlogPost(id);
+      
+      if (!post) {
+        return res.status(404).send(`
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <title>Bài viết không tồn tại - Âm Lịch Việt Nam</title>
+  <meta name="description" content="Bài viết không tồn tại hoặc đã bị xóa">
+</head>
+<body><h1>404 - Bài viết không tồn tại</h1></body>
+</html>`);
+      }
+
+      const seoTitle = `${post.title} - Blog Âm Lịch Việt`;
+      const seoDescription = post.excerpt;
+      const seoUrl = `https://am-lich-viet-nam.replit.app/blog/${id}`;
+      
+      const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": post.title,
+        "description": post.excerpt,
+        "author": {
+          "@type": "Person",
+          "name": post.author
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Âm Lịch Việt Nam"
+        },
+        "datePublished": post.publishedAt,
+        "articleSection": post.category,
+        "keywords": post.tags.join(", "),
+        "url": seoUrl,
+        "inLanguage": "vi-VN"
+      };
+
+      const html = `<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${seoTitle}</title>
+  <meta name="description" content="${seoDescription}">
+  <meta name="keywords" content="${post.tags.join(", ")}, âm lịch việt nam">
+  <link rel="canonical" href="${seoUrl}">
+  
+  <meta property="og:title" content="${post.title}">
+  <meta property="og:description" content="${seoDescription}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="${seoUrl}">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${post.title}">
+  <meta name="twitter:description" content="${seoDescription}">
+  
+  <script type="application/ld+json">${JSON.stringify(structuredData)}</script>
+</head>
+<body>
+  <article>
+    <h1>${post.title}</h1>
+    <p><strong>Tác giả:</strong> ${post.author}</p>
+    <p><strong>Ngày đăng:</strong> ${new Date(post.publishedAt).toLocaleDateString('vi-VN')}</p>
+    <p><strong>Chủ đề:</strong> ${post.category}</p>
+    <p><strong>Tags:</strong> ${post.tags.join(', ')}</p>
+    <div>
+      <h2>Tóm tắt:</h2>
+      <p>${post.excerpt}</p>
+    </div>
+    <div>
+      <h2>Nội dung:</h2>
+      <div>${post.content}</div>
+    </div>
+    <p><a href="/">← Quay về trang chủ</a></p>
+  </article>
+</body>
+</html>`;
+      
+      res.send(html);
+    } catch (error) {
+      res.status(500).send('<html><body><h1>Lỗi server</h1></body></html>');
+    }
+  });
+
   app.post("/api/blog", async (req, res) => {
     try {
       const validatedData = insertBlogPostSchema.parse(req.body);
