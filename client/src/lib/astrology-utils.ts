@@ -67,7 +67,7 @@ export function calculateAstrology(birthInfo: BirthInfo): AstrologyResult {
   const destiny = DESTINIES[destinyIndex];
 
   // Get personality traits
-  const personality = PERSONALITY_TRAITS[CHI[chiIndex]] || 'Có tính cách độc đáo và thú vị';
+  const personality = PERSONALITY_TRAITS[CHI[chiIndex] as keyof typeof PERSONALITY_TRAITS] || 'Có tính cách độc đáo và thú vị';
 
   return {
     yearPillar,
