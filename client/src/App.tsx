@@ -7,6 +7,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Calendar from "@/pages/calendar";
 import Astrology from "@/pages/astrology";
+import Zodiac from "@/pages/zodiac";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 
@@ -18,6 +19,7 @@ function Router() {
         <Route path="/" component={Home} />
         <Route path="/calendar" component={Calendar} />
         <Route path="/astrology" component={Astrology} />
+        <Route path="/zodiac" component={Zodiac} />
         <Route component={NotFound} />
       </Switch>
       <Footer />

@@ -11,6 +11,7 @@ export default function Navigation() {
     { name: "Trang Chủ", href: "/" },
     { name: "Lịch Âm", href: "/calendar" },
     { name: "Tử Vi", href: "/astrology" },
+    { name: "Cung Hoàng Đạo", href: "/zodiac" },
   ];
 
   return (
