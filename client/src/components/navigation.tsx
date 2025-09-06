@@ -10,6 +10,7 @@ import {
   Sparkles,
   Calculator,
   Settings,
+  BookOpen,
 } from "lucide-react";
 
 export default function Navigation() {
@@ -17,7 +18,7 @@ export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigation = [
-    { name: "Tử Vi", href: "/astrology", icon: Star, shortName: "Tử vi" },
+    { name: "Blog", href: "/blog", icon: BookOpen, shortName: "Blog" },
     {
       name: "12 Cung Hoàng Đạo",
       href: "/zodiac",
@@ -38,13 +39,7 @@ export default function Navigation() {
       shortName: "Thần số học",
       mobileName: "Thần SH",
     },
-    {
-      name: "Cài đặt",
-      href: "/settings",
-      icon: Settings,
-      shortName: "Cài đặt",
-      disabled: true,
-    },
+    { name: "Tử Vi", href: "/astrology", icon: Star, shortName: "Tử vi" },
   ];
 
   return (
