@@ -36,6 +36,114 @@ export default function LunarCalendar() {
           <p className="text-muted-foreground">Tháng {currentDate.getMonth() + 1} âm lịch - Năm Giáp Thìn</p>
         </div>
 
+        {/* Today's Information - Mobile: Before calendar, Desktop: Before calendar */}
+        <div className="block md:hidden mb-8">
+          <Card className="p-4">
+            <CardContent className="pt-6">
+              <h3 className="text-xl font-semibold mb-4 font-serif">Thông Tin Hôm Nay</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Dương lịch:</span>
+                  <span className="font-semibold" data-testid="text-solar-date">
+                    {todayInfo.solarDate}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Âm lịch:</span>
+                  <span className="font-semibold" data-testid="text-lunar-date">
+                    {todayInfo.lunarDate}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Can Chi:</span>
+                  <span className="font-semibold text-secondary" data-testid="text-can-chi">
+                    {todayInfo.canChi}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Cung hoàng đạo:</span>
+                  <span className="font-semibold" data-testid="text-zodiac">
+                    {todayInfo.zodiacSign}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Giờ hoàng đạo:</span>
+                  <span className="font-semibold text-primary" data-testid="text-lucky-hours">
+                    {todayInfo.luckyHours}
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Desktop: Both sections before calendar */}
+        <div className="hidden md:grid md:grid-cols-2 gap-8 mb-8">
+          <Card className="p-6">
+            <CardContent className="pt-6">
+              <h3 className="text-xl font-semibold mb-4 font-serif">Thông Tin Hôm Nay</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Dương lịch:</span>
+                  <span className="font-semibold" data-testid="text-solar-date">
+                    {todayInfo.solarDate}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Âm lịch:</span>
+                  <span className="font-semibold" data-testid="text-lunar-date">
+                    {todayInfo.lunarDate}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Can Chi:</span>
+                  <span className="font-semibold text-secondary" data-testid="text-can-chi">
+                    {todayInfo.canChi}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Cung hoàng đạo:</span>
+                  <span className="font-semibold" data-testid="text-zodiac">
+                    {todayInfo.zodiacSign}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Giờ hoàng đạo:</span>
+                  <span className="font-semibold text-primary" data-testid="text-lucky-hours">
+                    {todayInfo.luckyHours}
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="p-6">
+            <CardContent className="pt-6">
+              <h3 className="text-xl font-semibold mb-4 font-serif">Lễ Hội Sắp Tới</h3>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
+                  <div className="text-primary text-xl">
+                    <CalendarCheck className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <div className="font-semibold">Đông Chí</div>
+                    <div className="text-sm text-muted-foreground">22/12/2024 (11/11 âm lịch)</div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
+                  <div className="text-secondary text-xl">
+                    <Star className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <div className="font-semibold">Tết Nguyên Đán</div>
+                    <div className="text-sm text-muted-foreground">29/01/2025 (Mùng 1/1 âm lịch)</div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Calendar Header */}
         <Card className="p-4 md:p-6 mb-8">
           <CardContent className="pt-6">
@@ -103,47 +211,9 @@ export default function LunarCalendar() {
           </CardContent>
         </Card>
 
-        {/* Today's Information */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <Card className="p-3 md:p-6">
-            <CardContent className="pt-6">
-              <h3 className="text-xl font-semibold mb-4 font-serif">Thông Tin Hôm Nay</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Dương lịch:</span>
-                  <span className="font-semibold" data-testid="text-solar-date">
-                    {todayInfo.solarDate}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Âm lịch:</span>
-                  <span className="font-semibold" data-testid="text-lunar-date">
-                    {todayInfo.lunarDate}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Can Chi:</span>
-                  <span className="font-semibold text-secondary" data-testid="text-can-chi">
-                    {todayInfo.canChi}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Cung hoàng đạo:</span>
-                  <span className="font-semibold" data-testid="text-zodiac">
-                    {todayInfo.zodiacSign}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Giờ hoàng đạo:</span>
-                  <span className="font-semibold text-primary" data-testid="text-lucky-hours">
-                    {todayInfo.luckyHours}
-                  </span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="p-3 md:p-6">
+        {/* Festivals Section - Mobile only: After calendar */}
+        <div className="block md:hidden mt-8">
+          <Card className="p-4">
             <CardContent className="pt-6">
               <h3 className="text-xl font-semibold mb-4 font-serif">Lễ Hội Sắp Tới</h3>
               <div className="space-y-4">
