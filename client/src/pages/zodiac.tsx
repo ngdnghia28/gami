@@ -197,10 +197,10 @@ export default function Zodiac() {
   return (
     <main className="min-h-screen py-8 md:py-20 bg-muted">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold font-serif mb-4">12 Cung Hoàng Đạo</h1>
-          <p className="text-muted-foreground">
-            Khám phá tính cách và vận mệnh của bạn qua 12 cung hoàng đạo phương Tây
+        <div className="text-center mb-6 md:mb-12">
+          <h1 className="text-xl md:text-3xl font-bold font-serif mb-2 md:mb-4">12 Cung Hoàng Đạo</h1>
+          <p className="text-sm md:text-base text-muted-foreground">
+            Tính cách theo ngày sinh - Vận mệnh qua cung hoàng đạo phương Tây
           </p>
         </div>
 

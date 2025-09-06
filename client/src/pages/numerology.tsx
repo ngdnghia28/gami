@@ -58,10 +58,10 @@ export default function Numerology() {
   return (
     <main className="min-h-screen py-8 md:py-20 bg-muted">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold font-serif mb-4">Thần Số Học</h1>
-          <p className="text-muted-foreground">
-            Khám phá con số định mệnh và tính cách của bạn qua thần số học
+        <div className="text-center mb-6 md:mb-12">
+          <h1 className="text-xl md:text-3xl font-bold font-serif mb-2 md:mb-4">Thần Số Học Online</h1>
+          <p className="text-sm md:text-base text-muted-foreground">
+            Tính số định mệnh theo họ tên - Khám phá tính cách qua con số
           </p>
         </div>
 
