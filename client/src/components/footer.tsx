@@ -36,6 +36,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/zodiac" className="hover:text-primary transition-colors">
+                  Cung Hoàng Đạo
+                </Link>
+              </li>
+              <li>
                 <Link href="/" className="hover:text-primary transition-colors">
                   Lễ Hội
                 </Link>
