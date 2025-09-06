@@ -12,6 +12,7 @@ import {
   Settings,
   BookOpen,
 } from "lucide-react";
+import SettingsDrawer from "@/components/settings-drawer";
 
 export default function Navigation() {
   const [location] = useLocation();
@@ -40,6 +41,7 @@ export default function Navigation() {
       mobileName: "Thần SH",
     },
     { name: "Tử Vi", href: "/astrology", icon: Star, shortName: "Tử vi" },
+    { name: "Cài đặt", href: "/settings", icon: Settings, shortName: "Cài đặt", isDrawer: true },
   ];
 
   return (
@@ -86,6 +88,23 @@ export default function Navigation() {
             const Icon = item.icon;
             const isActive = location === item.href;
             const isCenter = index === 2; // Center item (Âm lịch)
+            const isDrawer = item.isDrawer;
+
+            if (isDrawer) {
+              return (
+                <SettingsDrawer key={item.name}>
+                  <div
+                    className="flex flex-col items-center justify-center flex-1 py-2 px-1 cursor-pointer"
+                    data-testid={`mobile-nav-${item.name.toLowerCase().replace(" ", "-")}`}
+                  >
+                    <Icon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                    <span className="text-xs mt-1 text-gray-500 dark:text-gray-400">
+                      {item.mobileName || item.shortName}
+                    </span>
+                  </div>
+                </SettingsDrawer>
+              );
+            }
 
             return (
               <Link

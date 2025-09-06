@@ -11,6 +11,7 @@ import Zodiac from "@/pages/zodiac";
 import Numerology from "@/pages/numerology";
 import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
+import Account from "@/pages/account";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 
@@ -27,6 +28,7 @@ function Router() {
           <Route path="/numerology" component={Numerology} />
           <Route path="/blog" component={Blog} />
           <Route path="/blog/:id" component={BlogPost} />
+          <Route path="/account" component={Account} />
           <Route component={NotFound} />
         </Switch>
         <Footer />
