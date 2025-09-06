@@ -123,7 +123,8 @@ export class MemStorage implements IStorage {
       ...insertPost,
       id,
       publishedAt: new Date(),
-      isPublished: insertPost.isPublished ?? true
+      isPublished: insertPost.isPublished ?? true,
+      tags: insertPost.tags || []
     };
     this.blogPosts.set(id, post);
     return post;
