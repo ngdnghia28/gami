@@ -4,6 +4,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, CalendarCheck, Star } from "lucide-react";
 import { generateCalendarDays, getCurrentLunarInfo } from "@/lib/lunar-utils";
 
+// Helper function to get short lunar day for mobile
+const getShortLunarDay = (lunarDay: string): string => {
+  return lunarDay.replace('Mùng ', '');
+};
+
 export default function LunarCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const calendarDays = generateCalendarDays(currentDate);
@@ -87,6 +92,9 @@ export default function LunarCalendar() {
                   data-testid={`calendar-day-${day.date}`}
                 >
                   <div className="text-lg font-semibold mb-1">{day.date}</div>
+                  {/* Mobile: Short lunar day only */}
+                  <div className="block md:hidden text-xs text-muted-foreground leading-tight">{getShortLunarDay(day.lunarDay)}</div>
+                  {/* Desktop: Full lunar day */}
                   <div className="hidden md:block text-xs text-muted-foreground leading-tight mb-1">{day.lunarDay}</div>
                   <div className="hidden md:block text-xs text-secondary leading-tight">{day.zodiacAnimal}</div>
                 </div>
