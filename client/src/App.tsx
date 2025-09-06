@@ -9,6 +9,8 @@ import Calendar from "@/pages/calendar";
 import Astrology from "@/pages/astrology";
 import Zodiac from "@/pages/zodiac";
 import Numerology from "@/pages/numerology";
+import Blog from "@/pages/blog";
+import BlogPost from "@/pages/blog-post";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 
@@ -23,6 +25,8 @@ function Router() {
           <Route path="/astrology" component={Astrology} />
           <Route path="/zodiac" component={Zodiac} />
           <Route path="/numerology" component={Numerology} />
+          <Route path="/blog" component={Blog} />
+          <Route path="/blog/:id" component={BlogPost} />
           <Route component={NotFound} />
         </Switch>
         <Footer />
