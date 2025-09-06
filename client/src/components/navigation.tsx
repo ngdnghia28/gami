@@ -139,7 +139,7 @@ export default function Navigation() {
                         : "text-gray-500 dark:text-gray-400"
                   }`}
                 >
-                  {item.shortName}
+                  {item.mobileName || item.shortName}
                 </span>
               </Link>
             );
