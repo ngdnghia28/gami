@@ -145,7 +145,7 @@ export default function LunarCalendar() {
         </div>
 
         {/* Calendar Header */}
-        <Card className="p-4 md:p-6 mb-8">
+        <Card className="p-2 md:p-6 mb-4 md:mb-8">
           <CardContent className="pt-6">
             <div className="flex justify-between items-center mb-6">
               <Button
@@ -177,12 +177,12 @@ export default function LunarCalendar() {
             </div>
 
             {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-1 sm:gap-2">
+            <div className="grid grid-cols-7 gap-1 md:gap-2">
               {/* Day Headers */}
               {dayHeaders.map((day) => (
                 <div
                   key={day}
-                  className={`text-center p-2 sm:p-3 font-semibold ${
+                  className={`text-center p-1 md:p-3 font-semibold text-sm md:text-base ${
                     day === 'CN' || day === 'T7' ? 'text-primary' : ''
                   }`}
                 >
@@ -194,14 +194,14 @@ export default function LunarCalendar() {
               {calendarDays.map((day, index) => (
                 <div
                   key={index}
-                  className={`lunar-day border border-border rounded-lg p-2 md:p-3 text-center cursor-pointer hover:bg-accent/10 min-h-[60px] md:min-h-[100px] ${
+                  className={`lunar-day border border-border rounded-md md:rounded-lg p-1 md:p-3 text-center cursor-pointer hover:bg-accent/10 aspect-square md:min-h-[100px] flex flex-col justify-center ${
                     day.isToday ? 'bg-primary text-primary-foreground border-primary' : 'bg-background'
                   } ${day.isCurrentMonth ? '' : 'opacity-50'}`}
                   data-testid={`calendar-day-${day.date}`}
                 >
-                  <div className="text-lg font-semibold mb-1">{day.date}</div>
+                  <div className="text-base md:text-lg font-semibold mb-0 md:mb-1">{day.date}</div>
                   {/* Mobile: Short lunar day only */}
-                  <div className="block md:hidden text-xs text-muted-foreground leading-tight">{getShortLunarDay(day.lunarDay)}</div>
+                  <div className="block md:hidden text-[10px] text-muted-foreground leading-tight">{getShortLunarDay(day.lunarDay)}</div>
                   {/* Desktop: Full lunar day */}
                   <div className="hidden md:block text-xs text-muted-foreground leading-tight mb-1">{day.lunarDay}</div>
                   <div className="hidden md:block text-xs text-secondary leading-tight">{day.zodiacAnimal}</div>
