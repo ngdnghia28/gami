@@ -41,6 +41,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/numerology" className="hover:text-primary transition-colors">
+                  Thần Số Học
+                </Link>
+              </li>
+              <li>
                 <Link href="/" className="hover:text-primary transition-colors">
                   Lễ Hội
                 </Link>
