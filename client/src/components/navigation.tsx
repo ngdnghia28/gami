@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Calendar, Menu, X, Home, Star, Sparkles, Calculator } from "lucide-react";
+import { Calendar, Menu, X, Home, Star, Sparkles, Calculator, Settings } from "lucide-react";
 
 export default function Navigation() {
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigation = [
-    { name: "Trang Chủ", href: "/", icon: Home, shortName: "Sửa" },
-    { name: "Hình dạng", href: "/zodiac", icon: Sparkles, shortName: "Hình dạng" },
-    { name: "Âm lịch", href: "/calendar", icon: Calendar, shortName: "Mặt" },
-    { name: "Rufus", href: "/astrology", icon: Star, shortName: "Rufus" },
-    { name: "Gác", href: "/numerology", icon: Calculator, shortName: "Gác" },
+    { name: "Tử Vi", href: "/astrology", icon: Star, shortName: "Tử vi" },
+    { name: "12 Cung Hoàng Đạo", href: "/zodiac", icon: Sparkles, shortName: "12 Cung Hoàng Đạo" },
+    { name: "Âm lịch", href: "/calendar", icon: Calendar, shortName: "Âm lịch" },
+    { name: "Thần Số Học", href: "/numerology", icon: Calculator, shortName: "Thần số học" },
+    { name: "Cài đặt", href: "/settings", icon: Settings, shortName: "Cài đặt", disabled: true },
   ];
 
   return (
