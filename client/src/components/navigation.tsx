@@ -11,6 +11,7 @@ import {
   Calculator,
   Settings,
   BookOpen,
+  User,
 } from "lucide-react";
 import SettingsDrawer from "@/components/settings-drawer";
 
@@ -18,7 +19,8 @@ export default function Navigation() {
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navigation = [
+  // Desktop navigation - includes all menu items including Blog and Account
+  const desktopNavigation = [
     { name: "Blog", href: "/blog", icon: BookOpen, shortName: "Blog" },
     {
       name: "12 Cung Hoàng Đạo",
@@ -41,7 +43,40 @@ export default function Navigation() {
       mobileName: "Thần SH",
     },
     { name: "Tử Vi", href: "/astrology", icon: Star, shortName: "Tử vi" },
-    { name: "Cài đặt", href: "/settings", icon: Settings, shortName: "Cài đặt", isDrawer: true },
+    { name: "Tài khoản", href: "/account", icon: User, shortName: "Tài khoản" },
+  ];
+
+  // Mobile navigation - uses Settings drawer instead of individual menu items
+  const mobileNavigation = [
+    { name: "Blog", href: "/blog", icon: BookOpen, shortName: "Blog" },
+    {
+      name: "12 Cung Hoàng Đạo",
+      href: "/zodiac",
+      icon: Sparkles,
+      shortName: "12 Cung Hoàng Đạo",
+      mobileName: "Cung HD",
+    },
+    {
+      name: "Âm lịch",
+      href: "/calendar",
+      icon: Calendar,
+      shortName: "Âm lịch",
+    },
+    {
+      name: "Thần Số Học",
+      href: "/numerology",
+      icon: Calculator,
+      shortName: "Thần số học",
+      mobileName: "Thần SH",
+    },
+    { name: "Tử Vi", href: "/astrology", icon: Star, shortName: "Tử vi" },
+    {
+      name: "Cài đặt",
+      href: "/settings",
+      icon: Settings,
+      shortName: "Cài đặt",
+      isDrawer: true,
+    },
   ];
 
   return (
@@ -62,20 +97,20 @@ export default function Navigation() {
             </Link>
 
             <div className="flex space-x-8">
-              {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`nav-link transition-colors ${
-                      location === item.href
-                        ? "text-primary font-semibold"
-                        : "text-foreground hover:text-primary"
-                    }`}
-                    data-testid={`link-${item.name.toLowerCase().replace(" ", "-")}`}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
+              {desktopNavigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`nav-link transition-colors ${
+                    location === item.href
+                      ? "text-primary font-semibold"
+                      : "text-foreground hover:text-primary"
+                  }`}
+                  data-testid={`link-${item.name.toLowerCase().replace(" ", "-")}`}
+                >
+                  {item.name}
+                </Link>
+              ))}
             </div>
           </div>
         </div>
@@ -84,7 +119,7 @@ export default function Navigation() {
       {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
         <div className="flex justify-center items-center">
-          {navigation.map((item, index) => {
+          {mobileNavigation.map((item, index) => {
             const Icon = item.icon;
             const isActive = location === item.href;
             const isCenter = index === 2; // Center item (Âm lịch)
