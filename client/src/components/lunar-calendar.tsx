@@ -32,7 +32,7 @@ export default function LunarCalendar() {
         </div>
 
         {/* Calendar Header */}
-        <Card className="p-6 mb-8">
+        <Card className="p-3 md:p-6 mb-8">
           <CardContent className="pt-6">
             <div className="flex justify-between items-center mb-6">
               <Button
@@ -97,7 +97,7 @@ export default function LunarCalendar() {
 
         {/* Today's Information */}
         <div className="grid md:grid-cols-2 gap-8">
-          <Card className="p-6">
+          <Card className="p-3 md:p-6">
             <CardContent className="pt-6">
               <h3 className="text-xl font-semibold mb-4 font-serif">Thông Tin Hôm Nay</h3>
               <div className="space-y-3">
@@ -135,7 +135,7 @@ export default function LunarCalendar() {
             </CardContent>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-3 md:p-6">
             <CardContent className="pt-6">
               <h3 className="text-xl font-semibold mb-4 font-serif">Lễ Hội Sắp Tới</h3>
               <div className="space-y-4">

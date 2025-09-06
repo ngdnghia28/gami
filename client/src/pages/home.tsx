@@ -46,7 +46,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-12 font-serif">Tính Năng Chính</h2>
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="p-6 hover:shadow-lg transition-all" data-testid="card-lunar-calendar">
+            <Card className="p-3 md:p-6 hover:shadow-lg transition-all" data-testid="card-lunar-calendar">
               <CardContent className="pt-6">
                 <div className="text-primary text-3xl mb-4">
                   <Calendar className="w-8 h-8" />
@@ -58,7 +58,7 @@ export default function Home() {
               </CardContent>
             </Card>
             
-            <Card className="p-6 hover:shadow-lg transition-all" data-testid="card-date-converter">
+            <Card className="p-3 md:p-6 hover:shadow-lg transition-all" data-testid="card-date-converter">
               <CardContent className="pt-6">
                 <div className="text-secondary text-3xl mb-4">
                   <ArrowUpDown className="w-8 h-8" />
@@ -70,7 +70,7 @@ export default function Home() {
               </CardContent>
             </Card>
             
-            <Card className="p-6 hover:shadow-lg transition-all" data-testid="card-astrology">
+            <Card className="p-3 md:p-6 hover:shadow-lg transition-all" data-testid="card-astrology">
               <CardContent className="pt-6">
                 <div className="text-primary text-3xl mb-4">
                   <Star className="w-8 h-8" />
@@ -93,7 +93,7 @@ export default function Home() {
             {festivals.slice(0, 4).map((festival, index) => (
               <Card 
                 key={index} 
-                className="festival-card p-6 text-center border border-border"
+                className="festival-card p-3 md:p-6 text-center border border-border"
                 data-testid={`card-festival-${index}`}
               >
                 <CardContent className="pt-6">

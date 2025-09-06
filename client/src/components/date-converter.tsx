@@ -39,7 +39,7 @@ export default function DateConverter() {
           <p className="text-muted-foreground">Chuyển đổi giữa dương lịch và âm lịch một cách chính xác</p>
         </div>
 
-        <Card className="p-8">
+        <Card className="p-4 md:p-8">
           <CardContent className="pt-6">
             {/* Converter Tabs */}
             <div className="flex mb-8 bg-muted rounded-lg p-1">
@@ -132,7 +132,7 @@ export default function DateConverter() {
                 <div>
                   <h3 className="text-lg font-semibold mb-4">Kết Quả Âm Lịch</h3>
                   {convertedResult ? (
-                    <div className="bg-muted rounded-lg p-6 space-y-4">
+                    <div className="bg-muted rounded-lg p-3 md:p-6 space-y-4">
                       <div className="text-center">
                         <div className="text-3xl font-bold text-primary mb-2" data-testid="text-lunar-day">
                           {convertedResult.lunarDay}
@@ -169,7 +169,7 @@ export default function DateConverter() {
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-muted rounded-lg p-6 text-center text-muted-foreground">
+                    <div className="bg-muted rounded-lg p-3 md:p-6 text-center text-muted-foreground">
                       Nhập thông tin ngày tháng để xem kết quả chuyển đổi
                     </div>
                   )}

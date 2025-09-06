@@ -190,7 +190,7 @@ export default function Zodiac() {
           {zodiacSigns.map((sign, index) => (
             <Card 
               key={sign.name} 
-              className="p-6 hover:shadow-lg transition-all border border-border"
+              className="p-3 md:p-6 hover:shadow-lg transition-all border border-border"
               data-testid={`card-zodiac-${sign.name.toLowerCase()}`}
             >
               <CardContent className="pt-6">

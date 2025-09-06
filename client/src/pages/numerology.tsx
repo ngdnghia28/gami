@@ -49,7 +49,7 @@ export default function Numerology() {
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Input Form */}
-          <Card className="p-8">
+          <Card className="p-4 md:p-8">
             <CardContent className="pt-6">
               <div className="flex items-center gap-2 mb-6">
                 <Calculator className="h-5 w-5 text-primary" />
@@ -139,7 +139,7 @@ export default function Numerology() {
           </Card>
 
           {/* Results */}
-          <Card className="p-8">
+          <Card className="p-4 md:p-8">
             <CardContent className="pt-6">
               <div className="flex items-center gap-2 mb-6">
                 <Star className="h-5 w-5 text-primary" />
@@ -232,7 +232,7 @@ export default function Numerology() {
         {numerologyResult && (
           <div className="mt-8 space-y-6">
             {/* Life Path Meaning */}
-            <Card className="p-6">
+            <Card className="p-3 md:p-6">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-2 mb-4">
                   <Target className="h-5 w-5 text-primary" />
@@ -246,7 +246,7 @@ export default function Numerology() {
 
             <div className="grid md:grid-cols-2 gap-6">
               {/* Expression Meaning */}
-              <Card className="p-6">
+              <Card className="p-3 md:p-6">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Star className="h-5 w-5 text-secondary" />
@@ -259,7 +259,7 @@ export default function Numerology() {
               </Card>
 
               {/* Personality Meaning */}
-              <Card className="p-6">
+              <Card className="p-3 md:p-6">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Heart className="h-5 w-5 text-accent" />
@@ -274,7 +274,7 @@ export default function Numerology() {
 
             <div className="grid md:grid-cols-2 gap-6">
               {/* Opportunities */}
-              <Card className="p-6">
+              <Card className="p-3 md:p-6">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Trophy className="h-5 w-5 text-green-500" />
@@ -296,7 +296,7 @@ export default function Numerology() {
               </Card>
 
               {/* Challenges */}
-              <Card className="p-6">
+              <Card className="p-3 md:p-6">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-2 mb-4">
                     <AlertTriangle className="h-5 w-5 text-orange-500" />

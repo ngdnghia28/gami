@@ -40,7 +40,7 @@ export default function AstrologyForm() {
   };
 
   return (
-    <Card className="p-8">
+    <Card className="p-4 md:p-8">
       <CardContent className="pt-6">
         <div className="grid md:grid-cols-2 gap-8">
           <div>
@@ -249,7 +249,7 @@ export default function AstrologyForm() {
                 </div>
               </div>
             ) : (
-              <div className="bg-muted rounded-lg p-6 text-center text-muted-foreground">
+              <div className="bg-muted rounded-lg p-3 md:p-6 text-center text-muted-foreground">
                 Nhập thông tin sinh để xem lá số tử vi
               </div>
             )}
