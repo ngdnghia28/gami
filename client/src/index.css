@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(45, 20%, 98%);
+  --foreground: hsl(25, 15%, 15%);
+  --card: hsl(45, 15%, 96%);
+  --card-foreground: hsl(25, 15%, 15%);
+  --popover: hsl(45, 15%, 98%);
+  --popover-foreground: hsl(25, 15%, 15%);
+  --primary: hsl(358, 75%, 45%);
+  --primary-foreground: hsl(45, 20%, 98%);
+  --secondary: hsl(38, 85%, 50%);
+  --secondary-foreground: hsl(25, 15%, 15%);
+  --muted: hsl(42, 25%, 92%);
+  --muted-foreground: hsl(25, 15%, 45%);
+  --accent: hsl(38, 85%, 50%);
+  --accent-foreground: hsl(25, 15%, 15%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(45, 20%, 98%);
+  --border: hsl(42, 25%, 85%);
+  --input: hsl(42, 25%, 90%);
+  --ring: hsl(358, 75%, 45%);
+  --vietnamese-red: hsl(358, 75%, 45%);
+  --vietnamese-gold: hsl(38, 85%, 50%);
+  --vietnamese-cream: hsl(45, 20%, 98%);
+  --chart-1: hsl(358, 75%, 45%);
+  --chart-2: hsl(159.7826, 100%, 36.0784%);
+  --chart-3: hsl(42.0290, 92.8251%, 56.2745%);
+  --chart-4: hsl(147.1429, 78.5047%, 41.9608%);
+  --chart-5: hsl(341.4894, 75.2000%, 50.9804%);
+  --sidebar: hsl(45, 15%, 96%);
+  --sidebar-foreground: hsl(25, 15%, 15%);
+  --sidebar-primary: hsl(358, 75%, 45%);
+  --sidebar-primary-foreground: hsl(45, 20%, 98%);
+  --sidebar-accent: hsl(38, 85%, 50%);
+  --sidebar-accent-foreground: hsl(25, 15%, 15%);
+  --sidebar-border: hsl(42, 25%, 85%);
+  --sidebar-ring: hsl(358, 75%, 45%);
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-mono: "Fira Code", monospace;
+  --radius: 0.75rem;
+  --shadow-2xs: 0px 2px 0px 0px hsl(358, 75%, 45% / 0.00);
+  --shadow-xs: 0px 2px 0px 0px hsl(358, 75%, 45% / 0.00);
+  --shadow-sm: 0px 2px 0px 0px hsl(358, 75%, 45% / 0.00), 0px 1px 2px -1px hsl(358, 75%, 45% / 0.00);
+  --shadow: 0px 2px 0px 0px hsl(358, 75%, 45% / 0.00), 0px 1px 2px -1px hsl(358, 75%, 45% / 0.00);
+  --shadow-md: 0px 2px 0px 0px hsl(358, 75%, 45% / 0.00), 0px 2px 4px -1px hsl(358, 75%, 45% / 0.00);
+  --shadow-lg: 0px 2px 0px 0px hsl(358, 75%, 45% / 0.00), 0px 4px 6px -1px hsl(358, 75%, 45% / 0.00);
+  --shadow-xl: 0px 2px 0px 0px hsl(358, 75%, 45% / 0.00), 0px 8px 10px -1px hsl(358, 75%, 45% / 0.00);
+  --shadow-2xl: 0px 2px 0px 0px hsl(358, 75%, 45% / 0.00);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+}
+
+.dark {
+  --background: hsl(25, 15%, 8%);
+  --foreground: hsl(45, 20%, 92%);
+  --card: hsl(25, 15%, 10%);
+  --card-foreground: hsl(45, 20%, 92%);
+  --popover: hsl(25, 15%, 8%);
+  --popover-foreground: hsl(45, 20%, 92%);
+  --primary: hsl(358, 75%, 55%);
+  --primary-foreground: hsl(45, 20%, 98%);
+  --secondary: hsl(38, 85%, 60%);
+  --secondary-foreground: hsl(25, 15%, 8%);
+  --muted: hsl(25, 15%, 15%);
+  --muted-foreground: hsl(45, 20%, 65%);
+  --accent: hsl(38, 85%, 60%);
+  --accent-foreground: hsl(25, 15%, 8%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(45, 20%, 98%);
+  --border: hsl(25, 15%, 20%);
+  --input: hsl(25, 15%, 18%);
+  --ring: hsl(358, 75%, 55%);
+  --sidebar: hsl(25, 15%, 10%);
+  --sidebar-foreground: hsl(45, 20%, 92%);
+  --sidebar-primary: hsl(358, 75%, 55%);
+  --sidebar-primary-foreground: hsl(45, 20%, 98%);
+  --sidebar-accent: hsl(38, 85%, 60%);
+  --sidebar-accent-foreground: hsl(25, 15%, 8%);
+  --sidebar-border: hsl(25, 15%, 20%);
+  --sidebar-ring: hsl(358, 75%, 55%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+.traditional-border {
+  border-image: linear-gradient(45deg, var(--vietnamese-red), var(--vietnamese-gold), var(--vietnamese-red)) 1;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.vietnamese-pattern {
+  background-image: radial-gradient(circle at 1px 1px, rgba(220, 38, 38, 0.15) 1px, transparent 0);
+  background-size: 20px 20px;
+}
+
+.lunar-day {
+  transition: all 0.2s ease;
+}
+
+.lunar-day:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+
+.festival-card {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.05), rgba(245, 158, 11, 0.05));
+  backdrop-filter: blur(10px);
+}
