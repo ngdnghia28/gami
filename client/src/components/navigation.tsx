@@ -48,26 +48,23 @@ export default function Navigation() {
 
   // Mobile navigation - uses Settings drawer instead of individual menu items
   const mobileNavigation = [
-    { name: "Blog", href: "/blog", icon: BookOpen, shortName: "Blog" },
     {
       name: "12 Cung Hoàng Đạo",
       href: "/zodiac",
       icon: Sparkles,
-      shortName: "12 Cung Hoàng Đạo",
-      mobileName: "Cung HD",
+      shortName: "Cung HD",
+    },
+    {
+      name: "Thần Số Học",
+      href: "/numerology",
+      icon: Calculator,
+      shortName: "Thần SH",
     },
     {
       name: "Âm lịch",
       href: "/calendar",
       icon: Calendar,
       shortName: "Âm lịch",
-    },
-    {
-      name: "Thần Số Học",
-      href: "/numerology",
-      icon: Calculator,
-      shortName: "Thần số học",
-      mobileName: "Thần SH",
     },
     { name: "Tử Vi", href: "/astrology", icon: Star, shortName: "Tử vi" },
     {
