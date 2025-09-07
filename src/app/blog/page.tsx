@@ -1,14 +1,11 @@
-import { Metadata } from "next";
+"use client";
+
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Calendar, Clock, User, ArrowRight } from "lucide-react";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Blog - Âm Lịch Việt Nam",
-  description: "Khám phá những bài viết về truyền thống văn hóa Việt Nam, lịch âm, tử vi, phong thủy và các lễ hội truyền thống.",
-};
 
 // Mock data for blog posts - in a real app, this would come from an API or CMS
 const blogPosts = [
@@ -65,6 +62,16 @@ const blogPosts = [
 const categories = ["Tất cả", "Truyền thống", "Tử vi", "Phong thủy", "Lễ hội"];
 
 export default function BlogPage() {
+  const [selectedCategory, setSelectedCategory] = useState("Tất cả");
+  
+  // Filter posts based on selected category
+  const filteredPosts = selectedCategory === "Tất cả" 
+    ? blogPosts 
+    : blogPosts.filter(post => post.category === selectedCategory);
+    
+  // Get featured post from filtered results
+  const featuredPost = filteredPosts[0];
+  const remainingPosts = filteredPosts.slice(1);
   return (
     <main className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,8 +91,9 @@ export default function BlogPage() {
           {categories.map((category) => (
             <Badge 
               key={category} 
-              variant={category === "Tất cả" ? "default" : "outline"}
-              className="px-4 py-2 cursor-pointer hover:bg-primary hover:text-primary-foreground"
+              variant={category === selectedCategory ? "default" : "outline"}
+              className="px-4 py-2 cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+              onClick={() => setSelectedCategory(category)}
             >
               {category}
             </Badge>
@@ -93,15 +101,17 @@ export default function BlogPage() {
         </div>
 
         {/* Featured Article */}
-        {blogPosts.length > 0 && (
+        {featuredPost && (
           <div className="mb-16">
-            <h2 className="text-2xl font-bold mb-6">Bài Viết Nổi Bật</h2>
+            <h2 className="text-2xl font-bold mb-6">
+              {selectedCategory === "Tất cả" ? "Bài Viết Nổi Bật" : `Nổi Bật - ${selectedCategory}`}
+            </h2>
             <Card className="overflow-hidden hover:shadow-lg transition-shadow">
               <div className="md:flex">
                 <div className="md:w-1/2">
                   <img 
-                    src={blogPosts[0].image} 
-                    alt={blogPosts[0].title}
+                    src={featuredPost.image} 
+                    alt={featuredPost.title}
                     className="w-full h-64 md:h-full object-cover"
                   />
                 </div>
@@ -109,21 +119,21 @@ export default function BlogPage() {
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                     <div className="flex items-center gap-1">
                       <User className="h-4 w-4" />
-                      {blogPosts[0].author}
+                      {featuredPost.author}
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
-                      {new Date(blogPosts[0].publishedAt).toLocaleDateString('vi-VN')}
+                      {new Date(featuredPost.publishedAt).toLocaleDateString('vi-VN')}
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock className="h-4 w-4" />
-                      {blogPosts[0].readTime} phút đọc
+                      {featuredPost.readTime} phút đọc
                     </div>
                   </div>
-                  <Badge className="mb-3">{blogPosts[0].category}</Badge>
-                  <h3 className="text-2xl font-bold mb-4">{blogPosts[0].title}</h3>
-                  <p className="text-muted-foreground mb-6">{blogPosts[0].excerpt}</p>
-                  <Link href={`/blog/${blogPosts[0].id}`}>
+                  <Badge className="mb-3">{featuredPost.category}</Badge>
+                  <h3 className="text-2xl font-bold mb-4">{featuredPost.title}</h3>
+                  <p className="text-muted-foreground mb-6">{featuredPost.excerpt}</p>
+                  <Link href={`/blog/${featuredPost.id}`}>
                     <Button>
                       Đọc thêm <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
@@ -136,9 +146,41 @@ export default function BlogPage() {
 
         {/* Blog Grid */}
         <div>
-          <h2 className="text-2xl font-bold mb-6">Tất Cả Bài Viết</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {blogPosts.slice(1).map((post) => (
+          <h2 className="text-2xl font-bold mb-6">
+            {selectedCategory === "Tất cả" ? "Tất Cả Bài Viết" : `Bài Viết ${selectedCategory}`}
+            {filteredPosts.length > 0 && (
+              <span className="text-base text-muted-foreground ml-2">
+                ({filteredPosts.length} bài viết)
+              </span>
+            )}
+          </h2>
+          
+          {remainingPosts.length === 0 && featuredPost ? (
+            <div className="text-center py-12">
+              <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">
+                {selectedCategory === "Tất cả" 
+                  ? "Chỉ có 1 bài viết trong danh mục này" 
+                  : `Chỉ có 1 bài viết trong danh mục ${selectedCategory}`}
+              </p>
+            </div>
+          ) : remainingPosts.length === 0 ? (
+            <div className="text-center py-12">
+              <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">
+                Không có bài viết nào trong danh mục {selectedCategory}
+              </p>
+              <Button 
+                variant="outline" 
+                className="mt-4"
+                onClick={() => setSelectedCategory("Tất cả")}
+              >
+                Xem tất cả bài viết
+              </Button>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {remainingPosts.map((post) => (
               <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative">
                   <img 
@@ -173,8 +215,9 @@ export default function BlogPage() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Call to Action */}
