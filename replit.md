@@ -2,7 +2,7 @@
 
 ## Overview
 
-A modern web application for exploring Vietnamese lunar calendar traditions, built with React frontend and Express backend. The application provides lunar calendar conversion, astrology readings, and festival information, preserving and showcasing Vietnamese cultural heritage through an intuitive digital interface.
+A modern web application for exploring Vietnamese lunar calendar traditions, fully migrated to Next.js 13+ with app router for enhanced SEO and performance. The application provides lunar calendar conversion, astrology readings, and festival information, preserving and showcasing Vietnamese cultural heritage through an intuitive digital interface.
 
 ## User Preferences
 
@@ -10,21 +10,17 @@ Preferred communication style: Simple, everyday language.
 
 ## System Architecture
 
-### Frontend Architecture
-- **Framework**: React 18 with TypeScript for type safety and modern development
-- **Routing**: Wouter for lightweight client-side routing
-- **State Management**: TanStack Query for server state management and caching
+### Architecture (Next.js 13+ App Router)
+- **Framework**: Next.js 13+ with App Router for server-side rendering and enhanced SEO
+- **Frontend**: React 18 with TypeScript for type safety and modern development
+- **Routing**: Next.js App Router with file-based routing system
+- **State Management**: TanStack Query for client-side state management and caching
 - **Styling**: Tailwind CSS with custom Vietnamese cultural theme (red, gold, cream color palette)
 - **UI Components**: Radix UI primitives with shadcn/ui design system for consistent, accessible components
-- **Build System**: Vite for fast development and optimized production builds
-
-### Backend Architecture
-- **Runtime**: Node.js with Express.js framework
-- **Language**: TypeScript for full-stack type safety
-- **API Design**: RESTful API with structured endpoints for lunar dates, festivals, and astrology readings
-- **Data Storage**: In-memory storage with interfaces designed for easy database migration
-- **Validation**: Zod schemas for request/response validation
-- **Error Handling**: Centralized error handling middleware with structured error responses
+- **API Routes**: Next.js API routes for serverless backend functionality
+- **Language**: Full-stack TypeScript for end-to-end type safety
+- **Data Validation**: Zod schemas for request/response validation
+- **SEO**: Built-in metadata API for optimal search engine optimization
 
 ### Database Design
 - **ORM**: Drizzle ORM with PostgreSQL dialect for type-safe database operations
@@ -41,9 +37,19 @@ Preferred communication style: Simple, everyday language.
 - **Festival Database**: Comprehensive collection of Vietnamese traditional festivals with lunar dates
 
 ### Development Workflow
-- **Development Server**: Vite dev server with hot module replacement for rapid development
-- **Production Build**: Optimized builds with code splitting and static asset optimization
+- **Development Server**: Next.js development server with fast refresh and hot reloading
+- **Production Build**: Optimized builds with automatic code splitting and static optimization
 - **Code Quality**: TypeScript strict mode with path mapping for clean imports
+- **SEO Optimization**: Server-side rendering and static generation for better search engine visibility
+
+## Migration Status
+Successfully completed migration from Vite + Express to Next.js 13+ App Router:
+- ✅ Converted all React pages to Next.js App Router structure
+- ✅ Migrated Express API routes to Next.js API routes  
+- ✅ Updated routing from Wouter to Next.js Link components
+- ✅ Configured Tailwind CSS and UI components for Next.js
+- ✅ Updated metadata and SEO optimization using Next.js metadata API
+- ✅ Cleaned up legacy Express server and Vite configuration files
 
 ## External Dependencies
 
