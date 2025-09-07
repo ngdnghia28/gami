@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Merriweather } from "next/font/google";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import { queryClient } from "@/lib/queryClient";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const inter = Inter({ 
@@ -49,17 +46,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Create a client component for providers
-function Providers({ children }: { children: React.ReactNode }) {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        {children}
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
-}
 
 export default function RootLayout({
   children,

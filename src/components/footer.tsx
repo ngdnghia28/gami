@@ -1,6 +1,6 @@
 "use client";
 
-import { Link } from "wouter";
+import Link from "next/link";
 import { Calendar } from "lucide-react";
 import { Facebook, Twitter, Instagram, Youtube } from "lucide-react";
 

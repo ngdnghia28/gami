@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Link, useLocation } from "wouter";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Calendar,
@@ -18,7 +19,7 @@ import {
 import SettingsDrawer from "@/components/settings-drawer";
 
 export default function Navigation() {
-  const [location] = useLocation();
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Desktop navigation - includes all menu items including Blog and Account
@@ -101,7 +102,7 @@ export default function Navigation() {
                   key={item.name}
                   href={item.href}
                   className={`nav-link transition-colors ${
-                    location === item.href
+                    pathname === item.href
                       ? "text-primary font-semibold"
                       : "text-foreground hover:text-primary"
                   }`}
@@ -120,7 +121,7 @@ export default function Navigation() {
         <div className="flex justify-center items-center">
           {mobileNavigation.map((item, index) => {
             const Icon = item.icon;
-            const isActive = location === item.href;
+            const isActive = pathname === item.href;
             const isCenter = index === 2; // Center item (Âm lịch)
             const isDrawer = item.isDrawer;
 
