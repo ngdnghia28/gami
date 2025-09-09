@@ -9,9 +9,17 @@ import LoginForm from "@/components/auth/login-form";
 import RegisterForm from "@/components/auth/register-form";
 import ProfileSection from "@/components/auth/profile-section";
 
+// Types
+interface UserData {
+  id: number;
+  email: string;
+  name: string;
+  joinDate: string;
+}
+
 export default function AccountPage() {
   const [authMode, setAuthMode] = useState<"login" | "register" | "profile">("login");
-  const [user, setUser] = useState<any>(null); // Replace with proper user type
+  const [user, setUser] = useState<UserData | null>(null);
 
   // Mock authentication check - replace with real auth logic
   const isAuthenticated = false;
@@ -71,9 +79,9 @@ export default function AccountPage() {
           </CardHeader>
           <CardContent>
             {authMode === "login" ? (
-              <LoginForm onSuccess={(userData) => setUser(userData)} />
+              <LoginForm onSuccess={(userData: UserData) => setUser(userData)} />
             ) : (
-              <RegisterForm onSuccess={(userData) => setUser(userData)} />
+              <RegisterForm onSuccess={(userData: UserData) => setUser(userData)} />
             )}
           </CardContent>
         </Card>
