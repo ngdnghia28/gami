@@ -48,20 +48,23 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
     setIsLoading(true);
 
     try {
-      // TODO: Replace with actual API call
-      console.log("Đăng ký với:", formData);
-      
-      // Mock successful registration
-      setTimeout(() => {
-        onSuccess({
-          id: 1,
-          email: formData.email,
-          name: formData.name,
-          joinDate: new Date().toISOString()
-        });
-        setIsLoading(false);
-      }, 1000);
-      
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Đăng ký thất bại');
+      }
+
+      // Success - call onSuccess with user data
+      onSuccess(data.user);
+      setIsLoading(false);
     } catch (err: any) {
       setError(err.message || "Đã có lỗi xảy ra khi đăng ký");
       setIsLoading(false);

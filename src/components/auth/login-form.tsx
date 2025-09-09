@@ -26,20 +26,23 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
     setError("");
 
     try {
-      // TODO: Replace with actual API call
-      console.log("Đăng nhập với:", formData);
-      
-      // Mock successful login
-      setTimeout(() => {
-        onSuccess({
-          id: 1,
-          email: formData.email,
-          name: "Người dùng",
-          joinDate: new Date().toISOString()
-        });
-        setIsLoading(false);
-      }, 1000);
-      
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Đăng nhập thất bại');
+      }
+
+      // Success - call onSuccess with user data
+      onSuccess(data.user);
+      setIsLoading(false);
     } catch (err: any) {
       setError(err.message || "Đã có lỗi xảy ra khi đăng nhập");
       setIsLoading(false);

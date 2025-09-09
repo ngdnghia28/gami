@@ -4,9 +4,29 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 export const users = pgTable("users", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  password: varchar("password", { length: 255 }).notNull(),
+  bio: text("bio"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const userSessions = pgTable("user_sessions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  token: varchar("token", { length: 500 }).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const userFavorites = pgTable("user_favorites", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  contentType: varchar("content_type", { length: 50 }).notNull(),
+  contentId: integer("content_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const lunarDates = pgTable("lunar_dates", {
@@ -58,8 +78,24 @@ export const blogPosts = pgTable("blog_posts", {
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
+  name: true,
+  email: true,
   password: true,
+});
+
+export const loginUserSchema = createInsertSchema(users).pick({
+  email: true,
+  password: true,
+});
+
+export const insertUserSessionSchema = createInsertSchema(userSessions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertUserFavoriteSchema = createInsertSchema(userFavorites).omit({
+  id: true,
+  createdAt: true,
 });
 
 export const insertLunarDateSchema = createInsertSchema(lunarDates).omit({
@@ -80,7 +116,12 @@ export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type LoginUser = z.infer<typeof loginUserSchema>;
 export type User = typeof users.$inferSelect;
+export type UserSession = typeof userSessions.$inferSelect;
+export type UserFavorite = typeof userFavorites.$inferSelect;
+export type InsertUserSession = z.infer<typeof insertUserSessionSchema>;
+export type InsertUserFavorite = z.infer<typeof insertUserFavoriteSchema>;
 export type LunarDate = typeof lunarDates.$inferSelect;
 export type Festival = typeof festivals.$inferSelect;
 export type AstrologyReading = typeof astrologyReadings.$inferSelect;
