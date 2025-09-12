@@ -5,7 +5,7 @@ import { randomUUID } from "crypto";
 // you might need
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
+  getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   getAllLunarDates(): Promise<LunarDate[]>;
@@ -22,7 +22,8 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
+  private users: Map<number, User>;
+  private userIdSeq = 1;
   private lunarDates: Map<string, LunarDate>;
   private festivals: Map<string, Festival>;
   private astrologyReadings: Map<string, AstrologyReading>;
@@ -37,19 +38,26 @@ export class MemStorage implements IStorage {
     this.initializeSampleBlogPosts();
   }
 
-  async getUser(id: string): Promise<User | undefined> {
+  async getUser(id: number): Promise<User | undefined> {
     return this.users.get(id);
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     return Array.from(this.users.values()).find(
-      (user) => user.username === username,
+      (user) => user.name === username,
     );
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
+    const id = this.userIdSeq++;
+    const now = new Date();
+    const user: User = { 
+      ...insertUser, 
+      id,
+      bio: null,
+      createdAt: now,
+      updatedAt: now
+    };
     this.users.set(id, user);
     return user;
   }
