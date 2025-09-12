@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type LunarDate, type InsertLunarDate, type Festival, type InsertFestival, type AstrologyReading, type InsertAstrologyReading, type BlogPost, type InsertBlogPost } from "./schema";
+import { type User, type InsertUser, type UserSession, type InsertUserSession, type LunarDate, type InsertLunarDate, type Festival, type InsertFestival, type AstrologyReading, type InsertAstrologyReading, type BlogPost, type InsertBlogPost } from "./schema";
 import { randomUUID } from "crypto";
 
 // modify the interface with any CRUD methods
@@ -9,6 +9,10 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  createSession(session: InsertUserSession): Promise<UserSession>;
+  getSessionByToken(token: string): Promise<UserSession | undefined>;
+  deleteSession(token: string): Promise<void>;
+  deleteExpiredSessions(): Promise<void>;
   getAllLunarDates(): Promise<LunarDate[]>;
   getLunarDateBySolar(date: string): Promise<LunarDate | undefined>;
   createLunarDate(lunarDate: InsertLunarDate): Promise<LunarDate>;
@@ -24,6 +28,7 @@ export interface IStorage {
 
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
+  private sessions: Map<string, UserSession>;
   private userIdSeq = 1;
   private lunarDates: Map<string, LunarDate>;
   private festivals: Map<string, Festival>;
@@ -32,6 +37,7 @@ export class MemStorage implements IStorage {
 
   constructor() {
     this.users = new Map();
+    this.sessions = new Map();
     this.lunarDates = new Map();
     this.festivals = new Map();
     this.astrologyReadings = new Map();
@@ -69,6 +75,43 @@ export class MemStorage implements IStorage {
     };
     this.users.set(id, user);
     return user;
+  }
+
+  async createSession(insertSession: InsertUserSession): Promise<UserSession> {
+    const id = randomUUID();
+    const now = new Date();
+    const session: UserSession = {
+      ...insertSession,
+      id,
+      createdAt: now
+    };
+    this.sessions.set(insertSession.token, session);
+    return session;
+  }
+
+  async getSessionByToken(token: string): Promise<UserSession | undefined> {
+    const session = this.sessions.get(token);
+    if (session && session.expiresAt > new Date()) {
+      return session;
+    }
+    if (session && session.expiresAt <= new Date()) {
+      // Session expired, remove it
+      this.sessions.delete(token);
+    }
+    return undefined;
+  }
+
+  async deleteSession(token: string): Promise<void> {
+    this.sessions.delete(token);
+  }
+
+  async deleteExpiredSessions(): Promise<void> {
+    const now = new Date();
+    for (const [token, session] of this.sessions) {
+      if (session.expiresAt <= now) {
+        this.sessions.delete(token);
+      }
+    }
   }
 
   async getAllLunarDates(): Promise<LunarDate[]> {
