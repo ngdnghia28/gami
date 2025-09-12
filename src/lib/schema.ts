@@ -94,7 +94,6 @@ export const insertUserSessionSchema = createInsertSchema(userSessions).omit({
 });
 
 export const insertUserFavoriteSchema = createInsertSchema(userFavorites).omit({
-  id: true,
   createdAt: true,
 });
 
