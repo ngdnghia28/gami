@@ -9,6 +9,8 @@ export const users = pgTable("users", {
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
   bio: text("bio"),
+  birthDate: date("birth_date"),
+  birthTime: varchar("birth_time", { length: 20 }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -81,6 +83,8 @@ export const insertUserSchema = createInsertSchema(users).pick({
   name: true,
   email: true,
   password: true,
+  birthDate: true,
+  birthTime: true,
 });
 
 export const loginUserSchema = createInsertSchema(users).pick({

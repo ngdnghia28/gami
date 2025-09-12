@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-// TODO: Import your database client/ORM here
-// import { db } from "@/lib/db";
-// import bcrypt from "bcryptjs";
+import { storage } from '@/lib/storage';
+import bcrypt from 'bcryptjs';
+import { insertUserSchema } from '@/lib/schema';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, password } = body;
+    const { name, email, password, birthDate, birthTime } = body;
 
     // Validation
     if (!name || !email || !password) {
@@ -32,47 +32,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Check if user already exists
-    // const existingUser = await db.user.findUnique({
-    //   where: { email },
-    // });
-
-    // if (existingUser) {
-    //   return NextResponse.json(
-    //     { error: "Email này đã được sử dụng" },
-    //     { status: 409 }
-    //   );
-    // }
-
-    // Mock registration for now - replace with actual database logic
-    if (email === "existing@example.com") {
+    // Check if user already exists
+    const existingUser = await storage.getUserByEmail(email);
+    if (existingUser) {
       return NextResponse.json(
         { error: "Email này đã được sử dụng" },
         { status: 409 }
       );
     }
 
-    // TODO: Hash password and save user to database
-    // const hashedPassword = bcrypt.hashSync(password, 10);
-    // const user = await db.user.create({
-    //   data: {
-    //     name,
-    //     email,
-    //     password: hashedPassword,
-    //   },
-    // });
-
-    // Mock user creation for now
-    const userData = {
-      id: Math.floor(Math.random() * 1000) + 1,
-      email: email,
-      name: name,
-      joinDate: new Date().toISOString()
-    };
+    // Hash password and save user to database
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    
+    // Validate the input data
+    const userData = insertUserSchema.parse({
+      name,
+      email,
+      password: hashedPassword,
+      birthDate: birthDate || null,
+      birthTime: birthTime || null
+    });
+    
+    const user = await storage.createUser(userData);
+    
+    // Remove password from response
+    const { password: _, ...userResponse } = user;
 
     return NextResponse.json(
       {
-        user: userData,
+        user: userResponse,
         message: "Đăng ký tài khoản thành công"
       },
       { status: 201 }

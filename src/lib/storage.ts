@@ -7,6 +7,7 @@ import { randomUUID } from "crypto";
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   getAllLunarDates(): Promise<LunarDate[]>;
   getLunarDateBySolar(date: string): Promise<LunarDate | undefined>;
@@ -48,6 +49,12 @@ export class MemStorage implements IStorage {
     );
   }
 
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.email === email,
+    );
+  }
+
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userIdSeq++;
     const now = new Date();
@@ -55,6 +62,8 @@ export class MemStorage implements IStorage {
       ...insertUser, 
       id,
       bio: null,
+      birthDate: insertUser.birthDate || null,
+      birthTime: insertUser.birthTime || null,
       createdAt: now,
       updatedAt: now
     };
@@ -285,4 +294,6 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Make storage persistent across hot reloads in development
+const globalForStorage = globalThis as unknown as { storage?: MemStorage };
+export const storage = globalForStorage.storage ?? (globalForStorage.storage = new MemStorage());
