@@ -70,6 +70,7 @@ export class MemStorage implements IStorage {
       bio: null,
       birthDate: insertUser.birthDate || null,
       birthTime: insertUser.birthTime || null,
+      isAdmin: insertUser.isAdmin ?? false,
       createdAt: now,
       updatedAt: now
     };

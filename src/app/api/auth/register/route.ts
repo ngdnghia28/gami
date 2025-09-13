@@ -6,7 +6,7 @@ import { insertUserSchema } from '@/lib/schema';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, password, birthDate, birthTime } = body;
+    const { name, email, password, birthDate, birthTime, isAdmin } = body;
 
     // Validation
     if (!name || !email || !password) {
@@ -50,7 +50,8 @@ export async function POST(request: NextRequest) {
       email,
       password: hashedPassword,
       birthDate: birthDate || null,
-      birthTime: birthTime || null
+      birthTime: birthTime || null,
+      isAdmin: isAdmin || false
     });
     
     const user = await storage.createUser(userData);

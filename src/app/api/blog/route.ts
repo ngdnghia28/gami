@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { storage } from '@/lib/storage';
 import { insertBlogPostSchema } from '@/lib/schema';
+import { requireAdmin } from '@/lib/auth-utils';
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,14 +19,52 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if user is admin
+    const authResult = await requireAdmin(request);
+    if (!authResult.success) {
+      return NextResponse.json(
+        { error: authResult.error },
+        { status: authResult.status }
+      );
+    }
+
     const body = await request.json();
+    
+    // Validate blog post data
     const validatedData = insertBlogPostSchema.parse(body);
-    const post = await storage.createBlogPost(validatedData);
-    return NextResponse.json(post, { status: 201 });
-  } catch (error) {
+    
+    // Set author to admin user's name
+    const blogPostData = {
+      ...validatedData,
+      author: authResult.user.name
+    };
+    
+    const post = await storage.createBlogPost(blogPostData);
+    
     return NextResponse.json(
-      { message: "Invalid blog post data" },
-      { status: 400 }
+      { 
+        post,
+        message: "Blog post được tạo thành công!"
+      }, 
+      { status: 201 }
+    );
+    
+  } catch (error: any) {
+    console.error("Create blog post error:", error);
+    
+    if (error.name === 'ZodError') {
+      return NextResponse.json(
+        { 
+          error: "Dữ liệu blog post không hợp lệ",
+          details: error.errors 
+        },
+        { status: 400 }
+      );
+    }
+    
+    return NextResponse.json(
+      { error: "Lỗi hệ thống khi tạo blog post" },
+      { status: 500 }
     );
   }
 }

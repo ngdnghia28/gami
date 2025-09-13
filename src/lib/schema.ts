@@ -11,6 +11,7 @@ export const users = pgTable("users", {
   bio: text("bio"),
   birthDate: date("birth_date"),
   birthTime: varchar("birth_time", { length: 20 }),
+  isAdmin: boolean("is_admin").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -85,6 +86,7 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
   birthDate: true,
   birthTime: true,
+  isAdmin: true,
 });
 
 export const loginUserSchema = createInsertSchema(users).pick({
@@ -116,6 +118,7 @@ export const insertAstrologyReadingSchema = createInsertSchema(astrologyReadings
 export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({
   id: true,
   publishedAt: true,
+  author: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
