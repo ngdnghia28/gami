@@ -253,7 +253,7 @@ export default function LunarCalendar() {
                   <div
                     key={index}
                     onClick={() => handleDayClick(day.date, day.isCurrentMonth)}
-                    className={`lunar-day border border-border rounded-md md:rounded-lg p-1 md:p-3 text-center cursor-pointer hover:bg-accent/10 aspect-square md:min-h-[100px] flex flex-col justify-center transition-all duration-200 ${
+                    className={`lunar-day border border-border rounded-md md:rounded-lg p-1 md:p-4 text-center cursor-pointer hover:bg-accent/10 aspect-square md:min-h-[120px] flex flex-col justify-center transition-all duration-200 ${
                       day.isToday ? 'bg-primary text-primary-foreground border-primary' : 
                       isSelected ? 'bg-green-100 dark:bg-green-800/40' : 'bg-background'
                     } ${
@@ -261,16 +261,16 @@ export default function LunarCalendar() {
                     }`}
                     data-testid={`calendar-day-${day.date}`}
                   >
-                    <div className="text-base md:text-lg font-semibold mb-0 md:mb-1">{day.date}</div>
+                    <div className="text-base md:text-xl font-semibold mb-0 md:mb-2">{day.date}</div>
                     {/* Mobile: Short lunar day only */}
                     <div className={`block md:hidden text-[10px] leading-tight ${
                       day.isToday ? 'text-primary-foreground' : 'text-muted-foreground'
                     }`}>{getShortLunarDay(day.lunarDay)}</div>
                     {/* Desktop: Full lunar day */}
-                    <div className={`hidden md:block text-xs leading-tight mb-1 ${
+                    <div className={`hidden md:block text-sm leading-tight mb-1 font-medium ${
                       day.isToday ? 'text-primary-foreground' : 'text-muted-foreground'
                     }`}>{day.lunarDay}</div>
-                    <div className={`hidden md:block text-xs leading-tight ${
+                    <div className={`hidden md:block text-sm leading-tight font-medium ${
                       day.isToday ? 'text-primary-foreground' : 'text-secondary'
                     }`}>{day.zodiacAnimal}</div>
                   </div>
