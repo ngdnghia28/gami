@@ -3,14 +3,7 @@
 const nextConfig = {
   output: 'standalone', // Required for Docker deployment
   experimental: {
-    turbopack: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
-      },
-    },
+    // turbopack: true, // Enable if needed, but basic config doesn't require detailed rules
   },
   async headers() {
     return [
