@@ -228,7 +228,7 @@ export default function LunarCalendar() {
                     onClick={() => handleDayClick(day.date, day.isCurrentMonth)}
                     className={`lunar-day border border-border rounded-md md:rounded-lg p-1 md:p-3 text-center cursor-pointer hover:bg-accent/10 aspect-square md:min-h-[100px] flex flex-col justify-center transition-all duration-200 ${
                       day.isToday ? 'bg-primary text-primary-foreground border-primary' : 
-                      isSelected ? 'bg-blue-100 dark:bg-blue-800/40' : 'bg-background'
+                      isSelected ? 'bg-green-100 dark:bg-green-800/40' : 'bg-background'
                     } ${
                       day.isCurrentMonth ? '' : 'opacity-50'
                     }`}
