@@ -43,23 +43,64 @@ export default function DateConverter() {
     label: `Tháng ${i + 1}`
   }));
 
+  const days = Array.from({ length: 31 }, (_, i) => ({
+    value: (i + 1).toString(),
+    label: (i + 1).toString()
+  }));
+
+  const years = Array.from({ length: 201 }, (_, i) => ({
+    value: (1900 + i).toString(),
+    label: (1900 + i).toString()
+  }));
+
+  // Function to validate and adjust date
+  const validateAndAdjustDate = (day: number, month: number, year: number) => {
+    const daysInMonth = new Date(year, month, 0).getDate();
+    if (day > daysInMonth) {
+      return { day: 1, month, year };
+    }
+    return { day, month, year };
+  };
+
   const handleConvert = () => {
     if (activeTab === 'solar-to-lunar') {
       if (solarDate.day && solarDate.month && solarDate.year) {
-        const result = convertSolarToLunar(
-          parseInt(solarDate.year),
+        const validatedDate = validateAndAdjustDate(
+          parseInt(solarDate.day),
           parseInt(solarDate.month),
-          parseInt(solarDate.day)
+          parseInt(solarDate.year)
+        );
+        
+        // Update state if date was adjusted
+        if (validatedDate.day !== parseInt(solarDate.day)) {
+          setSolarDate(prev => ({ ...prev, day: validatedDate.day.toString() }));
+        }
+        
+        const result = convertSolarToLunar(
+          validatedDate.year,
+          validatedDate.month,
+          validatedDate.day
         );
         setConvertedResult(result);
       }
     } else {
       if (lunarDate.day && lunarDate.month && lunarDate.year) {
+        const validatedDate = validateAndAdjustDate(
+          parseInt(lunarDate.day),
+          parseInt(lunarDate.month),
+          parseInt(lunarDate.year)
+        );
+        
+        // Update state if date was adjusted
+        if (validatedDate.day !== parseInt(lunarDate.day)) {
+          setLunarDate(prev => ({ ...prev, day: validatedDate.day.toString() }));
+        }
+        
         // Tạm thời sử dụng logic đơn giản cho chuyển đổi Âm sang Dương
         const approximateSolarDate = new Date(
-          parseInt(lunarDate.year),
-          parseInt(lunarDate.month) - 1,
-          parseInt(lunarDate.day)
+          validatedDate.year,
+          validatedDate.month - 1,
+          validatedDate.day
         );
         
         const result = {
@@ -68,7 +109,7 @@ export default function DateConverter() {
           solarYear: approximateSolarDate.getFullYear().toString(),
           weekDay: approximateSolarDate.toLocaleDateString('vi-VN', { weekday: 'long' }),
           season: getSeason(approximateSolarDate.getMonth() + 1),
-          description: `Ngày ${lunarDate.day} tháng ${lunarDate.month} âm lịch năm ${lunarDate.year} tương ứng với ngày ${approximateSolarDate.getDate()}/${approximateSolarDate.getMonth() + 1}/${approximateSolarDate.getFullYear()} dương lịch.`
+          description: `Ngày ${validatedDate.day} tháng ${validatedDate.month} âm lịch năm ${validatedDate.year} tương ứng với ngày ${approximateSolarDate.getDate()}/${approximateSolarDate.getMonth() + 1}/${approximateSolarDate.getFullYear()} dương lịch.`
         };
         setConvertedResult(result);
       }
@@ -128,16 +169,21 @@ export default function DateConverter() {
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="day">Ngày</Label>
-                      <Input
-                        id="day"
-                        type="number"
-                        placeholder="07"
-                        min="1"
-                        max="31"
+                      <Select
                         value={solarDate.day}
-                        onChange={(e) => setSolarDate(prev => ({ ...prev, day: e.target.value }))}
-                        data-testid="input-day"
-                      />
+                        onValueChange={(value) => setSolarDate(prev => ({ ...prev, day: value }))}
+                      >
+                        <SelectTrigger data-testid="select-day">
+                          <SelectValue placeholder="Chọn ngày" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {days.map((day) => (
+                            <SelectItem key={day.value} value={day.value}>
+                              {day.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="month">Tháng</Label>
@@ -159,16 +205,21 @@ export default function DateConverter() {
                     </div>
                     <div>
                       <Label htmlFor="year">Năm</Label>
-                      <Input
-                        id="year"
-                        type="number"
-                        placeholder="2024"
-                        min="1900"
-                        max="2100"
+                      <Select
                         value={solarDate.year}
-                        onChange={(e) => setSolarDate(prev => ({ ...prev, year: e.target.value }))}
-                        data-testid="input-year"
-                      />
+                        onValueChange={(value) => setSolarDate(prev => ({ ...prev, year: value }))}
+                      >
+                        <SelectTrigger data-testid="select-year">
+                          <SelectValue placeholder="Chọn năm" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {years.map((year) => (
+                            <SelectItem key={year.value} value={year.value}>
+                              {year.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     <Button
                       onClick={handleConvert}
@@ -245,16 +296,21 @@ export default function DateConverter() {
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="lunar-day">Ngày</Label>
-                      <Input
-                        id="lunar-day"
-                        type="number"
-                        placeholder="15"
-                        min="1"
-                        max="30"
+                      <Select
                         value={lunarDate.day}
-                        onChange={(e) => setLunarDate(prev => ({ ...prev, day: e.target.value }))}
-                        data-testid="input-lunar-day"
-                      />
+                        onValueChange={(value) => setLunarDate(prev => ({ ...prev, day: value }))}
+                      >
+                        <SelectTrigger data-testid="select-lunar-day">
+                          <SelectValue placeholder="Chọn ngày âm" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {days.map((day) => (
+                            <SelectItem key={day.value} value={day.value}>
+                              {day.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="lunar-month">Tháng</Label>
@@ -276,16 +332,21 @@ export default function DateConverter() {
                     </div>
                     <div>
                       <Label htmlFor="lunar-year">Năm</Label>
-                      <Input
-                        id="lunar-year"
-                        type="number"
-                        placeholder="2024"
-                        min="1900"
-                        max="2100"
+                      <Select
                         value={lunarDate.year}
-                        onChange={(e) => setLunarDate(prev => ({ ...prev, year: e.target.value }))}
-                        data-testid="input-lunar-year"
-                      />
+                        onValueChange={(value) => setLunarDate(prev => ({ ...prev, year: value }))}
+                      >
+                        <SelectTrigger data-testid="select-lunar-year">
+                          <SelectValue placeholder="Chọn năm âm" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {years.map((year) => (
+                            <SelectItem key={year.value} value={year.value}>
+                              {year.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     <Button
                       onClick={handleConvert}
