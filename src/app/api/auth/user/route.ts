@@ -34,8 +34,11 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Check if data has user property, if not use data directly
+    const userData = data.user || data;
+    
     return NextResponse.json(
-      { user: data.user },
+      { user: userData },
       { status: 200 }
     );
   } catch (error) {
