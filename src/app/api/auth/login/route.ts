@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { storage } from '@/lib/storage';
-import bcrypt from 'bcryptjs';
-import { randomUUID } from 'crypto';
+import { apiClient, type ApiError } from '@/lib/api-client';
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,50 +14,78 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check user credentials against database
-    const user = await storage.getUserByEmail(email);
-    
-    if (!user || !bcrypt.compareSync(password, user.password)) {
-      return NextResponse.json(
-        { error: "Email hoặc mật khẩu không đúng" },
-        { status: 401 }
-      );
-    }
+    // Call the real backend API - now returns ApiResponse with full Response object
+    const apiResponse = await apiClient.login({ email, password });
 
-    // Create session
-    const sessionToken = randomUUID();
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
-    
-    await storage.createSession({
-      userId: user.id,
-      token: sessionToken,
-      expiresAt
-    });
-
-    // Remove password from response
-    const { password: _, ...userResponse } = user;
-
+    // Create response with the data
     const response = NextResponse.json(
       { 
-        user: userResponse,
-        message: "Đăng nhập thành công"
+        user: apiResponse.data.user,
+        message: apiResponse.data.message || "Đăng nhập thành công"
       },
-      { status: 200 }
+      { status: apiResponse.status }
     );
 
-    // Set session cookie
-    response.cookies.set('session', sessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
-      path: '/'
+    // Forward all Set-Cookie headers from the backend response
+    const setCookieHeaders = apiResponse.response.headers.getSetCookie?.() || [];
+    setCookieHeaders.forEach(cookie => {
+      response.headers.append('Set-Cookie', cookie);
     });
+
+    // Also handle single Set-Cookie header (fallback for older implementations)
+    const singleSetCookie = apiResponse.response.headers.get('Set-Cookie');
+    if (singleSetCookie && setCookieHeaders.length === 0) {
+      response.headers.set('Set-Cookie', singleSetCookie);
+    }
 
     return response;
 
   } catch (error) {
     console.error("Login error:", error);
+    
+    // Use structured error handling instead of string parsing
+    if (error && typeof error === 'object' && 'status' in error) {
+      const apiError = error as ApiError;
+      
+      // Handle specific status codes
+      switch (apiError.status) {
+        case 400:
+          return NextResponse.json(
+            { error: apiError.message || "Dữ liệu đăng nhập không hợp lệ" },
+            { status: 400 }
+          );
+        case 401:
+          return NextResponse.json(
+            { error: apiError.message || "Email hoặc mật khẩu không đúng" },
+            { status: 401 }
+          );
+        case 403:
+          return NextResponse.json(
+            { error: apiError.message || "Tài khoản bị khóa hoặc không có quyền truy cập" },
+            { status: 403 }
+          );
+        case 429:
+          return NextResponse.json(
+            { error: apiError.message || "Quá nhiều lần thử đăng nhập. Vui lòng thử lại sau" },
+            { status: 429 }
+          );
+        case 500:
+        case 502:
+        case 503:
+        case 504:
+          return NextResponse.json(
+            { error: "Hệ thống đang bảo trì. Vui lòng thử lại sau" },
+            { status: 503 }
+          );
+        default:
+          return NextResponse.json(
+            { error: apiError.message || "Đã có lỗi xảy ra khi đăng nhập" },
+            { status: apiError.status }
+          );
+      }
+    }
+    
+    // Handle non-API errors
     return NextResponse.json(
       { error: "Đã có lỗi xảy ra khi đăng nhập" },
       { status: 500 }

@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { storage } from '@/lib/storage';
+import { apiClient, type ApiError } from '@/lib/api-client';
 import { insertFestivalSchema } from '@/lib/schema';
+import { festivalAdapters, handleApiError } from '@/lib/data-adapters';
 
 export async function GET() {
   try {
-    const festivals = await storage.getAllFestivals();
-    return NextResponse.json(festivals);
+    const festivals = await apiClient.getFestivals();
+    
+    // Transform external API response to internal format
+    const transformedFestivals = festivals.map(festival => festivalAdapters.fromExternal(festival));
+    
+    return NextResponse.json(transformedFestivals);
   } catch (error) {
-    return NextResponse.json(
-      { message: "Failed to fetch festivals" },
-      { status: 500 }
-    );
+    const { error: errorMessage, status } = handleApiError(error, "Failed to fetch festivals");
+    return NextResponse.json({ message: errorMessage }, { status });
   }
 }
 
@@ -18,12 +21,17 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const validatedData = insertFestivalSchema.parse(body);
-    const festival = await storage.createFestival(validatedData);
-    return NextResponse.json(festival, { status: 201 });
+    
+    // Transform internal data to external API format
+    const externalData = festivalAdapters.toExternal(validatedData);
+    const festival = await apiClient.createFestival(externalData);
+    
+    // Transform response back to internal format
+    const transformedFestival = festivalAdapters.fromExternal(festival);
+    
+    return NextResponse.json(transformedFestival, { status: 201 });
   } catch (error) {
-    return NextResponse.json(
-      { message: "Invalid festival data" },
-      { status: 400 }
-    );
+    const { error: errorMessage, status, details } = handleApiError(error, "Invalid festival data");
+    return NextResponse.json({ message: errorMessage, details }, { status });
   }
 }

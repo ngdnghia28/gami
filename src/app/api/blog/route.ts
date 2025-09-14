@@ -1,19 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { storage } from '@/lib/storage';
+import { apiClient, type ApiError } from '@/lib/api-client';
 import { insertBlogPostSchema } from '@/lib/schema';
 import { requireAdmin } from '@/lib/auth-utils';
+import { blogPostAdapters, handleApiError } from '@/lib/data-adapters';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const tag = searchParams.get('tag');
-    const posts = await storage.getAllBlogPosts(tag || undefined);
-    return NextResponse.json(posts);
+    const posts = await apiClient.getBlogPosts(tag || undefined);
+    
+    // Transform external API response to internal format
+    const transformedPosts = posts.map(post => blogPostAdapters.fromExternal(post));
+    
+    return NextResponse.json(transformedPosts);
   } catch (error) {
-    return NextResponse.json(
-      { message: "Failed to fetch blog posts" },
-      { status: 500 }
-    );
+    const { error: errorMessage, status } = handleApiError(error, "Failed to fetch blog posts");
+    return NextResponse.json({ message: errorMessage }, { status });
   }
 }
 
@@ -33,24 +36,31 @@ export async function POST(request: NextRequest) {
     // Validate blog post data
     const validatedData = insertBlogPostSchema.parse(body);
     
-    // Set author to admin user's name
+    // Set author to admin user's name and ensure tags is an array and isPublished is boolean
     const blogPostData = {
       ...validatedData,
-      author: authResult.user.name
+      author: authResult.user.name,
+      tags: validatedData.tags || [],
+      isPublished: validatedData.isPublished ?? true
     };
     
-    const post = await storage.createBlogPost(blogPostData);
+    // Transform to external API format
+    const externalData = blogPostAdapters.toExternal(blogPostData);
+    const post = await apiClient.createBlogPost(externalData);
+    
+    // Transform response back to internal format
+    const transformedPost = blogPostAdapters.fromExternal(post);
     
     return NextResponse.json(
       { 
-        post,
+        post: transformedPost,
         message: "Blog post được tạo thành công!"
       }, 
       { status: 201 }
     );
     
   } catch (error: any) {
-    console.error("Create blog post error:", error);
+    const { error: errorMessage, status, details } = handleApiError(error, "Lỗi hệ thống khi tạo blog post");
     
     if (error.name === 'ZodError') {
       return NextResponse.json(
@@ -63,8 +73,8 @@ export async function POST(request: NextRequest) {
     }
     
     return NextResponse.json(
-      { error: "Lỗi hệ thống khi tạo blog post" },
-      { status: 500 }
+      { error: errorMessage, details },
+      { status }
     );
   }
 }

@@ -188,7 +188,7 @@ export class MemStorage implements IStorage {
     return post?.isPublished ? post : undefined;
   }
 
-  async createBlogPost(insertPost: InsertBlogPost): Promise<BlogPost> {
+  async createBlogPost(insertPost: InsertBlogPost & { author: string }): Promise<BlogPost> {
     const id = randomUUID();
     const post: BlogPost = {
       ...insertPost,
