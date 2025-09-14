@@ -227,8 +227,9 @@ export default function LunarCalendar() {
                     key={index}
                     onClick={() => handleDayClick(day.date, day.isCurrentMonth)}
                     className={`lunar-day border border-border rounded-md md:rounded-lg p-1 md:p-3 text-center cursor-pointer hover:bg-accent/10 aspect-square md:min-h-[100px] flex flex-col justify-center transition-all duration-200 ${
-                      day.isToday ? 'bg-primary text-primary-foreground border-primary' : 'bg-background'
-                    } ${isSelected ? 'border-blue-500 border-2 ring-1 ring-blue-300' : ''} ${
+                      day.isToday ? 'bg-primary text-primary-foreground border-primary' : 
+                      isSelected ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-background'
+                    } ${
                       day.isCurrentMonth ? '' : 'opacity-50'
                     }`}
                     data-testid={`calendar-day-${day.date}`}
