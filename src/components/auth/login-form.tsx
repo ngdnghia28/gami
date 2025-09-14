@@ -43,6 +43,8 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
       }
 
       // Success - show success toast and call onSuccess with user data
+      console.log('Login successful, user data:', data.user);
+      
       toast({
         title: "Đăng nhập thành công! 🎉",
         description: `Chào mừng bạn trở lại, ${data.user?.name || 'người dùng'}!`,
@@ -51,6 +53,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
       
       // Small delay to show the toast before transitioning
       setTimeout(() => {
+        console.log('Calling onSuccess with user:', data.user);
         onSuccess(data.user);
         setIsLoading(false);
       }, 500);
