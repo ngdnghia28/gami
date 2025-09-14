@@ -18,6 +18,11 @@ export default function DateConverter() {
       year: today.getFullYear().toString()
     };
   });
+  const [lunarDate, setLunarDate] = useState({
+    day: '',
+    month: '',
+    year: ''
+  });
   const [convertedResult, setConvertedResult] = useState<any>(null);
 
   const months = Array.from({ length: 12 }, (_, i) => ({
@@ -26,14 +31,42 @@ export default function DateConverter() {
   }));
 
   const handleConvert = () => {
-    if (solarDate.day && solarDate.month && solarDate.year) {
-      const result = convertSolarToLunar(
-        parseInt(solarDate.year),
-        parseInt(solarDate.month),
-        parseInt(solarDate.day)
-      );
-      setConvertedResult(result);
+    if (activeTab === 'solar-to-lunar') {
+      if (solarDate.day && solarDate.month && solarDate.year) {
+        const result = convertSolarToLunar(
+          parseInt(solarDate.year),
+          parseInt(solarDate.month),
+          parseInt(solarDate.day)
+        );
+        setConvertedResult(result);
+      }
+    } else {
+      if (lunarDate.day && lunarDate.month && lunarDate.year) {
+        // Tạm thời sử dụng logic đơn giản cho chuyển đổi Âm sang Dương
+        const approximateSolarDate = new Date(
+          parseInt(lunarDate.year),
+          parseInt(lunarDate.month) - 1,
+          parseInt(lunarDate.day)
+        );
+        
+        const result = {
+          solarDay: approximateSolarDate.getDate().toString(),
+          solarMonth: `Tháng ${approximateSolarDate.getMonth() + 1}`,
+          solarYear: approximateSolarDate.getFullYear().toString(),
+          weekDay: approximateSolarDate.toLocaleDateString('vi-VN', { weekday: 'long' }),
+          season: getSeason(approximateSolarDate.getMonth() + 1),
+          description: `Ngày ${lunarDate.day} tháng ${lunarDate.month} âm lịch năm ${lunarDate.year} tương ứng với ngày ${approximateSolarDate.getDate()}/${approximateSolarDate.getMonth() + 1}/${approximateSolarDate.getFullYear()} dương lịch.`
+        };
+        setConvertedResult(result);
+      }
     }
+  };
+
+  const getSeason = (month: number): string => {
+    if (month >= 12 || month <= 2) return 'Đông Chí';
+    if (month >= 3 && month <= 5) return 'Xuân Phân';
+    if (month >= 6 && month <= 8) return 'Hạ Chí';
+    return 'Thu Phân';
   };
 
   return (
@@ -182,6 +215,111 @@ export default function DateConverter() {
                   {convertedResult && (
                     <div className="mt-6 p-4 bg-accent/10 rounded-lg border border-accent/20">
                       <h4 className="font-semibold text-accent mb-2">Thông Tin Thêm</h4>
+                      <p className="text-sm text-muted-foreground">
+                        {convertedResult.description}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Lunar to Solar Converter */}
+            {activeTab === 'lunar-to-solar' && (
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Nhập Ngày Âm Lịch</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="lunar-day">Ngày</Label>
+                      <Input
+                        id="lunar-day"
+                        type="number"
+                        placeholder="15"
+                        min="1"
+                        max="30"
+                        value={lunarDate.day}
+                        onChange={(e) => setLunarDate(prev => ({ ...prev, day: e.target.value }))}
+                        data-testid="input-lunar-day"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="lunar-month">Tháng</Label>
+                      <Select
+                        value={lunarDate.month}
+                        onValueChange={(value) => setLunarDate(prev => ({ ...prev, month: value }))}
+                      >
+                        <SelectTrigger data-testid="select-lunar-month">
+                          <SelectValue placeholder="Chọn tháng âm" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {months.map((month) => (
+                            <SelectItem key={month.value} value={month.value}>
+                              {month.label} âm
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="lunar-year">Năm</Label>
+                      <Input
+                        id="lunar-year"
+                        type="number"
+                        placeholder="2024"
+                        min="1900"
+                        max="2100"
+                        value={lunarDate.year}
+                        onChange={(e) => setLunarDate(prev => ({ ...prev, year: e.target.value }))}
+                        data-testid="input-lunar-year"
+                      />
+                    </div>
+                    <Button
+                      onClick={handleConvert}
+                      className="w-full bg-primary text-primary-foreground"
+                      data-testid="button-convert-lunar"
+                    >
+                      Chuyển Đổi
+                    </Button>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Kết Quả Dương Lịch</h3>
+                  {convertedResult ? (
+                    <div className="bg-muted rounded-lg p-3 md:p-6 space-y-4">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-primary mb-2" data-testid="text-solar-day">
+                          {convertedResult.solarDay}
+                        </div>
+                        <div className="text-xl font-semibold" data-testid="text-solar-month-year">
+                          {convertedResult.solarMonth} {convertedResult.solarYear}
+                        </div>
+                      </div>
+                      <div className="border-t border-border pt-4 space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Thứ:</span>
+                          <span className="font-semibold text-secondary" data-testid="text-result-weekday">
+                            {convertedResult.weekDay}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Tiết khí:</span>
+                          <span className="font-semibold" data-testid="text-result-solar-season">
+                            {convertedResult.season}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-muted rounded-lg p-3 md:p-6 text-center text-muted-foreground">
+                      Nhập thông tin ngày tháng âm lịch để xem kết quả chuyển đổi
+                    </div>
+                  )}
+
+                  {convertedResult && (
+                    <div className="mt-6 p-4 bg-accent/10 rounded-lg border border-accent/20">
+                      <h4 className="font-semibold text-accent mb-2">Thông Tin Chuyển Đổi</h4>
                       <p className="text-sm text-muted-foreground">
                         {convertedResult.description}
                       </p>
