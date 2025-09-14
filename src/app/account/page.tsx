@@ -130,10 +130,8 @@ export default function AccountPage() {
           <CardContent>
             {authMode === "login" ? (
               <LoginForm onSuccess={(userData: UserData) => {
-                console.log('AccountPage: onSuccess called with:', userData);
                 setUser(userData);
                 setIsAuthenticated(true);
-                console.log('AccountPage: State updated - user set, isAuthenticated = true');
               }} />
             ) : (
               <RegisterForm onSuccess={(userData: UserData) => {

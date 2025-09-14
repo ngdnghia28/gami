@@ -17,13 +17,6 @@ export async function POST(request: NextRequest) {
     // Call the real backend API - now returns ApiResponse with full Response object
     const apiResponse = await apiClient.login({ email, password });
 
-    // Debug logging
-    console.log('Backend API response:', {
-      status: apiResponse.status,
-      data: apiResponse.data,
-      user: apiResponse.data?.user
-    });
-
     // Handle different response formats from backend
     const userData = apiResponse.data.user || apiResponse.data;
     
@@ -50,12 +43,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Log cookie information for debugging
-    console.log('Backend cookies received:', {
-      multiple: setCookieHeaders,
-      single: apiResponse.response.headers.get('Set-Cookie'),
-      allHeaders: Array.from(apiResponse.response.headers.entries())
-    });
 
     return response;
 
