@@ -1,45 +1,55 @@
 import { NextRequest, NextResponse } from "next/server";
-import { storage } from '@/lib/storage';
+import { apiClient, type ApiError } from '@/lib/api-client';
 
 export async function GET(request: NextRequest) {
   try {
-    // Get session token from cookies
-    const sessionToken = request.cookies.get('session')?.value;
+    // Get connect.sid session cookie from backend
+    const connectSid = request.cookies.get('connect.sid')?.value;
     
-    if (!sessionToken) {
+    if (!connectSid) {
       return NextResponse.json(
         { error: "Chưa đăng nhập" },
         { status: 401 }
       );
     }
 
-    // Verify session
-    const session = await storage.getSessionByToken(sessionToken);
-    if (!session) {
+    // Create a new Headers object with the session cookie
+    const headers = new Headers();
+    headers.set('Cookie', `connect.sid=${connectSid}`);
+    
+    // Call the real backend API to get current user
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://adl-cms-735256194233.asia-southeast1.run.app';
+    const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+      method: 'GET',
+      headers,
+      credentials: 'include'
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
       return NextResponse.json(
-        { error: "Phiên đăng nhập đã hết hạn" },
-        { status: 401 }
+        { error: data.error || "Không thể xác thực người dùng" },
+        { status: response.status }
       );
     }
-
-    // Get user data
-    const user = await storage.getUser(session.userId);
-    if (!user) {
-      return NextResponse.json(
-        { error: "Người dùng không tồn tại" },
-        { status: 404 }
-      );
-    }
-
-    // Remove password from response
-    const { password: _, ...userResponse } = user;
 
     return NextResponse.json(
-      { user: userResponse },
+      { user: data.user },
       { status: 200 }
     );
   } catch (error) {
     console.error("Get user error:", error);
+    
+    // Handle API errors
+    if (error && typeof error === 'object' && 'status' in error) {
+      const apiError = error as ApiError;
+      return NextResponse.json(
+        { error: apiError.message || "Lỗi xác thực" },
+        { status: apiError.status }
+      );
+    }
+    
     return NextResponse.json(
       { error: "Lỗi hệ thống" },
       { status: 500 }
