@@ -3,10 +3,11 @@ import { apiClient, type ApiError } from '@/lib/api-client';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { date: string } }
+  { params }: { params: Promise<{ date: string }> }
 ) {
   try {
-    const lunarDate = await apiClient.getLunarDate(params.date);
+    const { date } = await params;
+    const lunarDate = await apiClient.getLunarDate(date);
     
     if (!lunarDate) {
       return NextResponse.json(

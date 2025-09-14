@@ -3,10 +3,11 @@ import { apiClient, type ApiError } from '@/lib/api-client';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const post = await apiClient.getBlogPost(params.id);
+    const { id } = await params;
+    const post = await apiClient.getBlogPost(id);
     
     if (!post) {
       return NextResponse.json(

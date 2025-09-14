@@ -3,10 +3,11 @@ import { apiClient, type ApiError } from '@/lib/api-client';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const reading = await apiClient.getAstrologyReading(params.id);
+    const { id } = await params;
+    const reading = await apiClient.getAstrologyReading(id);
     
     if (!reading) {
       return NextResponse.json(
