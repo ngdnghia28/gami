@@ -216,8 +216,10 @@ export default function LunarCalendar() {
               {calendarDays.map((day, index) => (
                 <div
                   key={index}
-                  className={`lunar-day border border-border rounded-md md:rounded-lg p-1 md:p-3 text-center cursor-pointer hover:bg-accent/10 aspect-square md:min-h-[100px] flex flex-col justify-center ${
-                    day.isToday ? 'bg-primary text-primary-foreground border-primary' : 'bg-background'
+                  className={`lunar-day border rounded-md md:rounded-lg p-1 md:p-3 text-center cursor-pointer hover:bg-accent/10 aspect-square md:min-h-[100px] flex flex-col justify-center transition-all duration-300 ${
+                    day.isToday 
+                      ? 'bg-primary text-primary-foreground border-primary border-2 md:border-4 shadow-lg md:shadow-xl shadow-primary/50 ring-2 md:ring-4 ring-primary/30 scale-105 md:scale-110 font-bold animate-pulse' 
+                      : 'bg-background border-border hover:scale-102'
                   } ${day.isCurrentMonth ? '' : 'opacity-50'}`}
                   data-testid={`calendar-day-${day.date}`}
                 >
