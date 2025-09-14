@@ -24,6 +24,7 @@ export default function LunarCalendar() {
     zodiacSign: '',
     luckyHours: ''
   });
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -35,6 +36,12 @@ export default function LunarCalendar() {
   }, []);
 
   const calendarDays = mounted ? generateCalendarDays(currentDate) : [];
+
+  const handleDayClick = (dayDate: number, isCurrentMonth: boolean) => {
+    if (isCurrentMonth) {
+      setSelectedDay(dayDate);
+    }
+  };
 
   const navigateMonth = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate);
@@ -213,24 +220,28 @@ export default function LunarCalendar() {
               ))}
 
               {/* Calendar Days */}
-              {calendarDays.map((day, index) => (
-                <div
-                  key={index}
-                  className={`lunar-day border rounded-md md:rounded-lg p-1 md:p-3 text-center cursor-pointer hover:bg-accent/10 aspect-square md:min-h-[100px] flex flex-col justify-center transition-all duration-300 ${
-                    day.isToday 
-                      ? 'bg-primary text-primary-foreground border-primary border-2 md:border-4 shadow-lg md:shadow-xl shadow-primary/50 ring-2 md:ring-4 ring-primary/30 scale-105 md:scale-110 font-bold animate-pulse' 
-                      : 'bg-background border-border hover:scale-102'
-                  } ${day.isCurrentMonth ? '' : 'opacity-50'}`}
-                  data-testid={`calendar-day-${day.date}`}
-                >
-                  <div className="text-base md:text-lg font-semibold mb-0 md:mb-1">{day.date}</div>
-                  {/* Mobile: Short lunar day only */}
-                  <div className="block md:hidden text-[10px] text-muted-foreground leading-tight">{getShortLunarDay(day.lunarDay)}</div>
-                  {/* Desktop: Full lunar day */}
-                  <div className="hidden md:block text-xs text-muted-foreground leading-tight mb-1">{day.lunarDay}</div>
-                  <div className="hidden md:block text-xs text-secondary leading-tight">{day.zodiacAnimal}</div>
-                </div>
-              ))}
+              {calendarDays.map((day, index) => {
+                const isSelected = selectedDay === day.date && day.isCurrentMonth;
+                return (
+                  <div
+                    key={index}
+                    onClick={() => handleDayClick(day.date, day.isCurrentMonth)}
+                    className={`lunar-day border border-border rounded-md md:rounded-lg p-1 md:p-3 text-center cursor-pointer hover:bg-accent/10 aspect-square md:min-h-[100px] flex flex-col justify-center transition-all duration-200 ${
+                      day.isToday ? 'bg-primary text-primary-foreground border-primary' : 'bg-background'
+                    } ${isSelected ? 'border-blue-500 border-2 ring-1 ring-blue-300' : ''} ${
+                      day.isCurrentMonth ? '' : 'opacity-50'
+                    }`}
+                    data-testid={`calendar-day-${day.date}`}
+                  >
+                    <div className="text-base md:text-lg font-semibold mb-0 md:mb-1">{day.date}</div>
+                    {/* Mobile: Short lunar day only */}
+                    <div className="block md:hidden text-[10px] text-muted-foreground leading-tight">{getShortLunarDay(day.lunarDay)}</div>
+                    {/* Desktop: Full lunar day */}
+                    <div className="hidden md:block text-xs text-muted-foreground leading-tight mb-1">{day.lunarDay}</div>
+                    <div className="hidden md:block text-xs text-secondary leading-tight">{day.zodiacAnimal}</div>
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
