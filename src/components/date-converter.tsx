@@ -18,10 +18,23 @@ export default function DateConverter() {
       year: today.getFullYear().toString()
     };
   });
-  const [lunarDate, setLunarDate] = useState({
-    day: '',
-    month: '',
-    year: ''
+  const [lunarDate, setLunarDate] = useState(() => {
+    const today = new Date();
+    const currentLunar = convertSolarToLunar(today.getFullYear(), today.getMonth() + 1, today.getDate());
+    // Extract lunar day number from the formatted string
+    const lunarDayNumber = currentLunar.lunarDay.replace('Mùng ', '').replace(/\D/g, '');
+    // Extract lunar month number from the formatted string
+    const lunarMonthMatch = currentLunar.lunarMonth.match(/Tháng (\d+)/);
+    const lunarMonthNumber = lunarMonthMatch ? lunarMonthMatch[1] : '1';
+    // Extract lunar year number
+    const lunarYearMatch = currentLunar.lunarMonth.match(/Năm .+ (\d+)/);
+    const lunarYearNumber = lunarYearMatch ? lunarYearMatch[1] : today.getFullYear().toString();
+    
+    return {
+      day: lunarDayNumber,
+      month: lunarMonthNumber,
+      year: lunarYearNumber
+    };
   });
   const [convertedResult, setConvertedResult] = useState<any>(null);
 
