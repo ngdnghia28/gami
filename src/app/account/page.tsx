@@ -77,7 +77,13 @@ export default function AccountPage() {
             <p className="text-muted-foreground">Quản lý thông tin cá nhân và cài đặt tài khoản</p>
           </div>
           
-          <ProfileSection user={user} />
+          <ProfileSection 
+            user={user} 
+            onLogout={() => {
+              setUser(null);
+              setIsAuthenticated(false);
+            }}
+          />
         </div>
       </div>
     );

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/hooks/use-toast";
 import {
   User,
   Settings,
@@ -18,15 +19,18 @@ import {
   X,
   Mail,
   Clock,
-  Shield
+  Shield,
+  LogOut
 } from "lucide-react";
 
 interface ProfileSectionProps {
   user: any; // Replace with proper user type
+  onLogout?: () => void; // Callback when user logs out
 }
 
-export default function ProfileSection({ user }: ProfileSectionProps) {
+export default function ProfileSection({ user, onLogout }: ProfileSectionProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [profileData, setProfileData] = useState({
     name: user?.name || "",
     email: user?.email || "",
@@ -46,6 +50,41 @@ export default function ProfileSection({ user }: ProfileSectionProps) {
       bio: user?.bio || ""
     });
     setIsEditing(false);
+  };
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    
+    try {
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Đăng xuất thành công",
+          description: "Bạn đã được đăng xuất khỏi hệ thống.",
+          variant: "default"
+        });
+        
+        // Call the onLogout callback to update parent state
+        if (onLogout) {
+          onLogout();
+        }
+      } else {
+        throw new Error("Đăng xuất thất bại");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast({
+        title: "Lỗi đăng xuất",
+        description: "Không thể đăng xuất. Vui lòng thử lại.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -264,8 +303,14 @@ export default function ProfileSection({ user }: ProfileSectionProps) {
                       <h4 className="font-medium text-red-600">Đăng xuất</h4>
                       <p className="text-sm text-muted-foreground">Đăng xuất khỏi tất cả thiết bị</p>
                     </div>
-                    <Button variant="destructive" size="sm">
-                      Đăng xuất
+                    <Button 
+                      variant="destructive" 
+                      size="sm"
+                      onClick={handleLogout}
+                      disabled={isLoggingOut}
+                    >
+                      <LogOut className="h-4 w-4 mr-1" />
+                      {isLoggingOut ? "Đang đăng xuất..." : "Đăng xuất"}
                     </Button>
                   </div>
                 </div>
