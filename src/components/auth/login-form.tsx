@@ -4,8 +4,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, CheckCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { toast } from "@/hooks/use-toast";
 
 interface LoginFormProps {
   onSuccess: (userData: any) => void;
@@ -41,11 +42,29 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
         throw new Error(data.error || 'Đăng nhập thất bại');
       }
 
-      // Success - call onSuccess with user data
-      onSuccess(data.user);
-      setIsLoading(false);
+      // Success - show success toast and call onSuccess with user data
+      toast({
+        title: "Đăng nhập thành công! 🎉",
+        description: `Chào mừng bạn trở lại, ${data.user?.name || 'người dùng'}!`,
+        variant: "default"
+      });
+      
+      // Small delay to show the toast before transitioning
+      setTimeout(() => {
+        onSuccess(data.user);
+        setIsLoading(false);
+      }, 500);
     } catch (err: any) {
-      setError(err.message || "Đã có lỗi xảy ra khi đăng nhập");
+      const errorMessage = err.message || "Đã có lỗi xảy ra khi đăng nhập";
+      setError(errorMessage);
+      
+      // Show error toast as well
+      toast({
+        title: "Đăng nhập thất bại",
+        description: errorMessage,
+        variant: "destructive"
+      });
+      
       setIsLoading(false);
     }
   };
