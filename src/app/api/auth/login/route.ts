@@ -17,6 +17,13 @@ export async function POST(request: NextRequest) {
     // Call the real backend API - now returns ApiResponse with full Response object
     const apiResponse = await apiClient.login({ email, password });
 
+    // Debug logging
+    console.log('Backend API response:', {
+      status: apiResponse.status,
+      data: apiResponse.data,
+      user: apiResponse.data?.user
+    });
+
     // Create response with the data
     const response = NextResponse.json(
       { 
