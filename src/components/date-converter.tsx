@@ -10,10 +10,13 @@ import { convertSolarToLunar } from "@/lib/lunar-utils";
 
 export default function DateConverter() {
   const [activeTab, setActiveTab] = useState<'solar-to-lunar' | 'lunar-to-solar'>('solar-to-lunar');
-  const [solarDate, setSolarDate] = useState({
-    day: '',
-    month: '',
-    year: ''
+  const [solarDate, setSolarDate] = useState(() => {
+    const today = new Date();
+    return {
+      day: today.getDate().toString(),
+      month: (today.getMonth() + 1).toString(),
+      year: today.getFullYear().toString()
+    };
   });
   const [convertedResult, setConvertedResult] = useState<any>(null);
 
