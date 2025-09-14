@@ -1,0 +1,71 @@
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Next.js
+.next/
+out/
+
+# Production build
+build/
+dist/
+
+# Environment variables
+.env*
+!.env.example
+
+# Vercel
+.vercel
+
+# Typescript
+*.tsbuildinfo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Misc
+.git/
+.gitignore
+README.md
+.prettierrc
+.eslintrc.json
+
+# Replit specific
+.replit
+replit.nix
+replit.md
+
+# Test files
+test_cookies.txt
+admin_cookies.txt
+cookies.txt
+regular_cookies.txt
+user_session.txt
+admin_session.txt
+admin.txt
+
+# Temporary files
+.tmp/
+temp/
