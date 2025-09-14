@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, CalendarCheck, Star } from "lucide-react";
-import { generateCalendarDays, getCurrentLunarInfo } from "@/lib/lunar-utils";
+import { generateCalendarDays, getCurrentLunarInfo, convertSolarToLunar } from "@/lib/lunar-utils";
 
 // Helper function to get short lunar day for mobile
 const getShortLunarDay = (lunarDay: string): string => {
@@ -25,6 +25,7 @@ export default function LunarCalendar() {
     luckyHours: ''
   });
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [selectedDateInfo, setSelectedDateInfo] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -37,9 +38,28 @@ export default function LunarCalendar() {
 
   const calendarDays = mounted ? generateCalendarDays(currentDate) : [];
 
+  const getSelectedDateInfo = (year: number, month: number, day: number) => {
+    const lunar = convertSolarToLunar(year, month, day);
+    const selectedDate = new Date(year, month - 1, day);
+    
+    return {
+      solarDate: selectedDate.toLocaleDateString('vi-VN'),
+      lunarDate: lunar.lunarDay + ' ' + lunar.lunarMonth,
+      canChi: lunar.canChi,
+      zodiacSign: lunar.zodiacSign,
+      luckyHours: 'Tý, Dần, Mão'
+    };
+  };
+
   const handleDayClick = (dayDate: number, isCurrentMonth: boolean) => {
     if (isCurrentMonth) {
       setSelectedDay(dayDate);
+      const selectedInfo = getSelectedDateInfo(
+        currentDate.getFullYear(), 
+        currentDate.getMonth() + 1, 
+        dayDate
+      );
+      setSelectedDateInfo(selectedInfo);
     }
   };
 
@@ -51,7 +71,14 @@ export default function LunarCalendar() {
       newDate.setMonth(newDate.getMonth() + 1);
     }
     setCurrentDate(newDate);
+    // Reset selected day when changing month
+    setSelectedDay(null);
+    setSelectedDateInfo(null);
   };
+
+  // Determine which info to display
+  const displayInfo = selectedDateInfo || todayInfo;
+  const displayTitle = selectedDateInfo ? "Thông Tin Ngày Được Chọn" : "Thông Tin Hôm Nay";
 
   const dayHeaders = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
@@ -69,36 +96,36 @@ export default function LunarCalendar() {
         <div className="block md:hidden mb-4">
           <Card className="p-4">
             <CardContent className="pt-6">
-              <h3 className="text-xl font-semibold mb-4 font-serif">Thông Tin Hôm Nay</h3>
+              <h3 className="text-xl font-semibold mb-4 font-serif">{displayTitle}</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Dương lịch:</span>
                   <span className="font-semibold" data-testid="text-solar-date">
-                    {todayInfo.solarDate}
+                    {mounted ? displayInfo.solarDate : 'Đang tải...'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Âm lịch:</span>
                   <span className="font-semibold" data-testid="text-lunar-date">
-                    {todayInfo.lunarDate}
+                    {displayInfo.lunarDate}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Can Chi:</span>
                   <span className="font-semibold text-secondary" data-testid="text-can-chi">
-                    {todayInfo.canChi}
+                    {displayInfo.canChi}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Cung hoàng đạo:</span>
                   <span className="font-semibold" data-testid="text-zodiac">
-                    {todayInfo.zodiacSign}
+                    {displayInfo.zodiacSign}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Giờ hoàng đạo:</span>
                   <span className="font-semibold text-primary" data-testid="text-lucky-hours">
-                    {todayInfo.luckyHours}
+                    {displayInfo.luckyHours}
                   </span>
                 </div>
               </div>
@@ -110,36 +137,36 @@ export default function LunarCalendar() {
         <div className="hidden md:grid md:grid-cols-2 gap-8 mb-6">
           <Card className="p-6">
             <CardContent className="pt-6">
-              <h3 className="text-xl font-semibold mb-4 font-serif">Thông Tin Hôm Nay</h3>
+              <h3 className="text-xl font-semibold mb-4 font-serif">{displayTitle}</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Dương lịch:</span>
                   <span className="font-semibold" data-testid="text-solar-date">
-                    {todayInfo.solarDate}
+                    {mounted ? displayInfo.solarDate : 'Đang tải...'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Âm lịch:</span>
                   <span className="font-semibold" data-testid="text-lunar-date">
-                    {todayInfo.lunarDate}
+                    {displayInfo.lunarDate}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Can Chi:</span>
                   <span className="font-semibold text-secondary" data-testid="text-can-chi">
-                    {todayInfo.canChi}
+                    {displayInfo.canChi}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Cung hoàng đạo:</span>
                   <span className="font-semibold" data-testid="text-zodiac">
-                    {todayInfo.zodiacSign}
+                    {displayInfo.zodiacSign}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Giờ hoàng đạo:</span>
                   <span className="font-semibold text-primary" data-testid="text-lucky-hours">
-                    {todayInfo.luckyHours}
+                    {displayInfo.luckyHours}
                   </span>
                 </div>
               </div>
