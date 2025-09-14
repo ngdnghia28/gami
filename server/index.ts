@@ -2,7 +2,6 @@
 
 // Temporary redirector to Next.js
 import { spawn } from 'child_process';
-import path from 'path';
 
 console.log('Starting Next.js development server...');
 

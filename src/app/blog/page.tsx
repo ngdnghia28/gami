@@ -1,68 +1,57 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Calendar, Clock, User, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-// Mock data for blog posts - in a real app, this would come from an API or CMS
-const blogPosts = [
-  {
-    id: 1,
-    title: "Ý Nghĩa Của Tết Nguyên Đán Trong Văn Hóa Việt Nam",
-    excerpt: "Tìm hiểu về nguồn gốc, ý nghĩa và các truyền thống đặc biệt của Tết Nguyên Đán - dịp lễ quan trọng nhất trong năm.",
-    content: "Tết Nguyên Đán là dịp lễ quan trọng nhất trong năm của người Việt Nam...",
-    author: "Biên Tập Viên",
-    publishedAt: "2024-01-15",
-    category: "Truyền thống",
-    tags: ["Tết", "Văn hóa", "Truyền thống"],
-    readTime: 8,
-    image: "/api/placeholder/600/400?text=Tết+Nguyên+Đán"
-  },
-  {
-    id: 2, 
-    title: "Cách Tính Tuổi Theo Âm Lịch Và Ý Nghĩa Của Từng Con Giáp",
-    excerpt: "Hướng dẫn chi tiết về cách tính tuổi theo âm lịch và tìm hiểu đặc điểm tính cách của 12 con giáp.",
-    content: "Trong văn hóa Việt Nam, việc tính tuổi theo âm lịch có ý nghĩa đặc biệt...",
-    author: "Chuyên Gia Phong Thủy",
-    publishedAt: "2024-01-12",
-    category: "Tử vi",
-    tags: ["Tuổi âm lịch", "12 con giáp", "Tử vi"],
-    readTime: 6,
-    image: "/api/placeholder/600/400?text=12+Con+Giáp"
-  },
-  {
-    id: 3,
-    title: "Các Ngày Tốt Xấu Trong Tháng Theo Âm Lịch",
-    excerpt: "Tìm hiểu về các ngày hoàng đạo, hắc đạo và cách chọn ngày tốt để làm việc quan trọng.",
-    content: "Theo truyền thống phong thủy Việt Nam, việc chọn ngày tốt là rất quan trọng...",
-    author: "Thầy Phong Thủy",
-    publishedAt: "2024-01-10",
-    category: "Phong thủy",
-    tags: ["Ngày tốt", "Hoàng đạo", "Phong thủy"],
-    readTime: 5,
-    image: "/api/placeholder/600/400?text=Ngày+Tốt+Xấu"
-  },
-  {
-    id: 4,
-    title: "Lễ Hội Trung Thu - Từ Nguồn Gốc Đến Ngày Nay",
-    excerpt: "Khám phá lịch sử và sự phát triển của Tết Trung Thu qua các thế hệ trong văn hóa Việt Nam.",
-    content: "Tết Trung Thu là một trong những lễ hội truyền thống quan trọng...",
-    author: "Nhà Nghiên Cứu Văn Hóa",
-    publishedAt: "2024-01-08",
-    category: "Lễ hội",
-    tags: ["Trung Thu", "Lễ hội", "Truyền thống"],
-    readTime: 7,
-    image: "/api/placeholder/600/400?text=Tết+Trung+Thu"
-  }
-];
+interface BlogPost {
+  id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  publishedAt: Date;
+  category: string;
+  tags: string[];
+  readTime: number;
+  isPublished: boolean;
+}
 
-const categories = ["Tất cả", "Truyền thống", "Tử vi", "Phong thủy", "Lễ hội"];
 
 export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [categories, setCategories] = useState<string[]>(["Tất cả"]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchBlogPosts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/blog');
+        if (!response.ok) {
+          throw new Error('Failed to fetch blog posts');
+        }
+        const posts: BlogPost[] = await response.json();
+        setBlogPosts(posts);
+        
+        // Extract unique categories from posts
+        const uniqueCategories = Array.from(new Set(posts.map(post => post.category)));
+        setCategories(["Tất cả", ...uniqueCategories]);
+      } catch (error) {
+        console.error('Error fetching blog posts:', error);
+        setError('Không thể tải bài viết. Vui lòng thử lại sau.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogPosts();
+  }, []);
   
   // Filter posts based on selected category
   const filteredPosts = selectedCategory === "Tất cả" 
@@ -72,6 +61,32 @@ export default function BlogPage() {
   // Get featured post from filtered results
   const featuredPost = filteredPosts[0];
   const remainingPosts = filteredPosts.slice(1);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Đang tải bài viết...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="min-h-screen py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">{error}</p>
+            <Button onClick={() => window.location.reload()}>Thử lại</Button>
+          </div>
+        </div>
+      </main>
+    );
+  }
   return (
     <main className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -108,12 +123,8 @@ export default function BlogPage() {
             </h2>
             <Card className="overflow-hidden hover:shadow-lg transition-shadow">
               <div className="md:flex">
-                <div className="md:w-1/2">
-                  <img 
-                    src={featuredPost.image} 
-                    alt={featuredPost.title}
-                    className="w-full h-64 md:h-full object-cover"
-                  />
+                <div className="md:w-1/2 bg-muted flex items-center justify-center">
+                  <BookOpen className="h-24 w-24 text-muted-foreground" />
                 </div>
                 <div className="md:w-1/2 p-6">
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
@@ -182,12 +193,8 @@ export default function BlogPage() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {remainingPosts.map((post) => (
               <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="relative">
-                  <img 
-                    src={post.image} 
-                    alt={post.title}
-                    className="w-full h-48 object-cover"
-                  />
+                <div className="relative bg-muted h-48 flex items-center justify-center">
+                  <BookOpen className="h-16 w-16 text-muted-foreground" />
                   <Badge className="absolute top-4 left-4">{post.category}</Badge>
                 </div>
                 <CardContent className="p-6">

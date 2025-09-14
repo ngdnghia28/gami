@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { User, Settings, Heart, BookOpen, Calendar, Lock } from "lucide-react";
+import { useState, useEffect } from "react";
+import { User, Settings, Heart, BookOpen, Calendar, Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,17 +14,61 @@ interface UserData {
   id: number;
   email: string;
   name: string;
-  joinDate: string;
+  birthDate?: string | null;
+  birthTime?: string | null;
+  bio?: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function AccountPage() {
   const [authMode, setAuthMode] = useState<"login" | "register" | "profile">("login");
   const [user, setUser] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Mock authentication check - replace with real auth logic
-  const isAuthenticated = false;
+  // Check authentication on page load
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/user', {
+          credentials: 'include',
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user);
+          setIsAuthenticated(true);
+        } else {
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        setUser(null);
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (isAuthenticated || user) {
+    checkAuth();
+  }, []);
+
+  // Show loading spinner while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-muted-foreground">Đang kiểm tra đăng nhập...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show profile if authenticated
+  if (isAuthenticated && user) {
     return (
       <div className="min-h-screen bg-background">
         <div className="max-w-6xl mx-auto px-4 py-8">
@@ -79,9 +123,15 @@ export default function AccountPage() {
           </CardHeader>
           <CardContent>
             {authMode === "login" ? (
-              <LoginForm onSuccess={(userData: UserData) => setUser(userData)} />
+              <LoginForm onSuccess={(userData: UserData) => {
+                setUser(userData);
+                setIsAuthenticated(true);
+              }} />
             ) : (
-              <RegisterForm onSuccess={(userData: UserData) => setUser(userData)} />
+              <RegisterForm onSuccess={(userData: UserData) => {
+                setUser(userData);
+                setIsAuthenticated(true);
+              }} />
             )}
           </CardContent>
         </Card>

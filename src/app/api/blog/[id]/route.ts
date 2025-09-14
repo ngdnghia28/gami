@@ -3,10 +3,11 @@ import { storage } from '@/lib/storage';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const post = await storage.getBlogPost(params.id);
+    const { id } = await params;
+    const post = await storage.getBlogPost(id);
     if (!post) {
       return NextResponse.json(
         { message: "Blog post not found" },

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-// TODO: Import your database client/ORM here
-// import { db } from "@/lib/db";
+import { storage } from '@/lib/storage';
+import bcrypt from 'bcryptjs';
+import { randomUUID } from 'crypto';
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,44 +16,47 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Replace with real authentication logic
-    // Example: Check user credentials against database
-    // const user = await db.user.findUnique({
-    //   where: { email },
-    // });
+    // Check user credentials against database
+    const user = await storage.getUserByEmail(email);
     
-    // if (!user || !bcrypt.compareSync(password, user.password)) {
-    //   return NextResponse.json(
-    //     { error: "Email hoặc mật khẩu không đúng" },
-    //     { status: 401 }
-    //   );
-    // }
-
-    // Mock user for now - replace with actual database query
-    if (email === "test@example.com" && password === "123456") {
-      const userData = {
-        id: 1,
-        email: email,
-        name: "Người dùng test",
-        joinDate: new Date().toISOString()
-      };
-
-      // TODO: Create session/JWT token
-      // const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
-
-      return NextResponse.json(
-        { 
-          user: userData,
-          message: "Đăng nhập thành công"
-        },
-        { status: 200 }
-      );
-    } else {
+    if (!user || !bcrypt.compareSync(password, user.password)) {
       return NextResponse.json(
         { error: "Email hoặc mật khẩu không đúng" },
         { status: 401 }
       );
     }
+
+    // Create session
+    const sessionToken = randomUUID();
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+    
+    await storage.createSession({
+      userId: user.id,
+      token: sessionToken,
+      expiresAt
+    });
+
+    // Remove password from response
+    const { password: _, ...userResponse } = user;
+
+    const response = NextResponse.json(
+      { 
+        user: userResponse,
+        message: "Đăng nhập thành công"
+      },
+      { status: 200 }
+    );
+
+    // Set session cookie
+    response.cookies.set('session', sessionToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
+      path: '/'
+    });
+
+    return response;
 
   } catch (error) {
     console.error("Login error:", error);

@@ -42,22 +42,20 @@ Preferred communication style: Simple, everyday language.
 - **Code Quality**: TypeScript strict mode with path mapping for clean imports
 - **SEO Optimization**: Server-side rendering and static generation for better search engine visibility
 
-## Migration Status
-Successfully completed migration from Vite + Express to Next.js 13+ App Router:
-- ✅ Converted all React pages to Next.js App Router structure
-- ✅ Migrated Express API routes to Next.js API routes  
-- ✅ Updated routing from Wouter to Next.js Link components
-- ✅ Configured Tailwind CSS and UI components for Next.js
-- ✅ Updated metadata and SEO optimization using Next.js metadata API
-- ✅ Cleaned up legacy Express server and Vite configuration files
+## Application Status
+The application is fully migrated to Next.js 13+ App Router:
+- ✅ Next.js App Router with file-based routing
+- ✅ Next.js API routes for backend functionality
+- ✅ React 18 with TypeScript integration
+- ✅ Tailwind CSS with custom Vietnamese cultural design
+- ✅ SEO optimization with Next.js metadata API
+- ✅ Database integration with Drizzle ORM
 
 ## External Dependencies
 
 ### Core Framework Dependencies
 - **@tanstack/react-query**: Server state management and caching
-- **wouter**: Lightweight React router
 - **drizzle-orm**: Type-safe database ORM
-- **@neondatabase/serverless**: PostgreSQL database connection (Neon serverless)
 
 ### UI and Styling
 - **@radix-ui/***: Comprehensive set of accessible UI primitives
@@ -66,14 +64,12 @@ Successfully completed migration from Vite + Express to Next.js 13+ App Router:
 - **lucide-react**: Icon library
 
 ### Development Tools
-- **vite**: Build tool and development server
 - **typescript**: Static type checking
 - **zod**: Runtime type validation
-- **@replit/vite-plugin-runtime-error-modal**: Development error overlay
+- **next**: React framework with built-in development server
 
 ### Database and Validation
 - **drizzle-zod**: Drizzle to Zod schema integration
-- **connect-pg-simple**: PostgreSQL session store
 - **date-fns**: Date manipulation utilities
 
-The application is configured for deployment on Replit with automatic builds and serves both development and production environments through a unified Express server that handles API routes and static file serving.
+The application is configured for deployment on Replit with Next.js built-in server handling both development and production environments with automatic builds and optimizations.
