@@ -90,11 +90,9 @@ export const blogPosts = pgTable("blog_posts", {
 
 // Schema validation for inserting new users (for registration)
 export const insertUserSchema = createInsertSchema(users, {
-  id: z.string().optional(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 }).omit({
-  id: true,
   createdAt: true,
   updatedAt: true,
 });
@@ -105,7 +103,6 @@ export const loginUserSchema = createInsertSchema(users).pick({
 });
 
 export const insertUserSessionSchema = createInsertSchema(userSessions, {
-  id: z.string().optional(),
   createdAt: z.date().optional(),
 }).omit({
   id: true,
@@ -118,21 +115,15 @@ export const insertUserFavoriteSchema = createInsertSchema(userFavorites, {
   createdAt: true,
 });
 
-export const insertLunarDateSchema = createInsertSchema(lunarDates, {
-  id: z.string().optional(),
-}).omit({
+export const insertLunarDateSchema = createInsertSchema(lunarDates).omit({
   id: true,
 });
 
-export const insertFestivalSchema = createInsertSchema(festivals, {
-  id: z.string().optional(),
-}).omit({
+export const insertFestivalSchema = createInsertSchema(festivals).omit({
   id: true,
 });
 
-export const insertAstrologyReadingSchema = createInsertSchema(astrologyReadings, {
-  id: z.string().optional(),
-}).omit({
+export const insertAstrologyReadingSchema = createInsertSchema(astrologyReadings).omit({
   id: true,
 });
 
