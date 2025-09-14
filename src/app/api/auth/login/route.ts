@@ -28,15 +28,24 @@ export async function POST(request: NextRequest) {
 
     // Forward all Set-Cookie headers from the backend response
     const setCookieHeaders = apiResponse.response.headers.getSetCookie?.() || [];
-    setCookieHeaders.forEach(cookie => {
-      response.headers.append('Set-Cookie', cookie);
-    });
-
-    // Also handle single Set-Cookie header (fallback for older implementations)
-    const singleSetCookie = apiResponse.response.headers.get('Set-Cookie');
-    if (singleSetCookie && setCookieHeaders.length === 0) {
-      response.headers.set('Set-Cookie', singleSetCookie);
+    if (setCookieHeaders.length > 0) {
+      setCookieHeaders.forEach(cookie => {
+        response.headers.append('Set-Cookie', cookie);
+      });
+    } else {
+      // Fallback: check for single Set-Cookie header
+      const singleSetCookie = apiResponse.response.headers.get('Set-Cookie');
+      if (singleSetCookie) {
+        response.headers.set('Set-Cookie', singleSetCookie);
+      }
     }
+
+    // Log cookie information for debugging
+    console.log('Backend cookies received:', {
+      multiple: setCookieHeaders,
+      single: apiResponse.response.headers.get('Set-Cookie'),
+      allHeaders: Array.from(apiResponse.response.headers.entries())
+    });
 
     return response;
 

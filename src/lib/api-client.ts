@@ -109,8 +109,10 @@ export class ApiClient {
     
     const config: RequestInit = {
       credentials: 'include', // Include cookies for cross-origin requests
+      mode: 'cors', // Explicitly set CORS mode
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
         ...options.headers,
       },
       ...options,
