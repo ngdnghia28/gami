@@ -88,13 +88,11 @@ export const blogPosts = pgTable("blog_posts", {
   canonicalUrl: text("canonical_url"),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  name: true,
-  email: true,
-  password: true,
-  birthDate: true,
-  birthTime: true,
-  isAdmin: true,
+// Schema validation for inserting new users (for registration)
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export const loginUserSchema = createInsertSchema(users).pick({
@@ -123,10 +121,10 @@ export const insertAstrologyReadingSchema = createInsertSchema(astrologyReadings
   id: true,
 });
 
+// Schema validation for inserting new blog posts
 export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({
   id: true,
   publishedAt: true,
-  author: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

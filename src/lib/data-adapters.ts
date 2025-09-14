@@ -14,9 +14,9 @@ import type {
 // Helper function to safely parse dates
 function safeDateParse(dateInput: string | Date | null | undefined): Date | null {
   if (!dateInput) return null;
-  
+
   if (dateInput instanceof Date) return dateInput;
-  
+
   try {
     const parsed = new Date(dateInput);
     return isNaN(parsed.getTime()) ? null : parsed;
@@ -28,9 +28,9 @@ function safeDateParse(dateInput: string | Date | null | undefined): Date | null
 // Helper function to ensure string format for dates
 function ensureDateString(dateInput: string | Date | null | undefined): string | null {
   if (!dateInput) return null;
-  
+
   if (typeof dateInput === 'string') return dateInput;
-  
+
   try {
     return dateInput.toISOString().split('T')[0];
   } catch {
@@ -196,18 +196,18 @@ export const astrologyAdapters = {
  */
 export function handleApiError(error: unknown, fallbackMessage: string = "An error occurred") {
   console.error("API Error:", error);
-  
+
   // Handle structured API errors
   if (error && typeof error === 'object' && 'status' in error) {
     const apiError = error as ApiError;
-    
+
     return {
       error: apiError.message || fallbackMessage,
       status: apiError.status,
       details: apiError.details
     };
   }
-  
+
   // Handle Zod validation errors
   if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
     return {
@@ -216,7 +216,7 @@ export function handleApiError(error: unknown, fallbackMessage: string = "An err
       details: error
     };
   }
-  
+
   // Handle generic errors
   return {
     error: error instanceof Error ? error.message : fallbackMessage,

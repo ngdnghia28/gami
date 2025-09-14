@@ -15,6 +15,22 @@ export interface BlogPost {
   tags: string[];
   readTime: number;
   isPublished: boolean;
+  slug?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  seoKeywords?: string[];
+  focusKeyword?: string;
+  ogImage?: string;
+  ogDescription?: string;
+  canonicalUrl?: string;
+}
+
+export interface BlogPostsResponse {
+  posts: BlogPost[];
+  totalCount: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export interface User {
@@ -158,9 +174,9 @@ export class ApiClient {
   }
 
   // Blog API methods
-  async getBlogPosts(tag?: string): Promise<BlogPost[] | { posts: BlogPost[], totalCount: number, page: number, limit: number, totalPages: number }> {
+  async getBlogPosts(tag?: string): Promise<BlogPost[] | BlogPostsResponse> {
     const params = tag ? `?tag=${encodeURIComponent(tag)}` : '';
-    return this.request<BlogPost[] | { posts: BlogPost[], totalCount: number, page: number, limit: number, totalPages: number }>(`/api/blog${params}`) as Promise<BlogPost[] | { posts: BlogPost[], totalCount: number, page: number, limit: number, totalPages: number }>;
+    return this.request<BlogPost[] | BlogPostsResponse>(`/api/blog${params}`) as Promise<BlogPost[] | BlogPostsResponse>;
   }
 
   async getBlogPost(id: string): Promise<BlogPost> {
