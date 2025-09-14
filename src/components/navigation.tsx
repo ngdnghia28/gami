@@ -72,7 +72,7 @@ export default function Navigation() {
       shortName: "Âm lịch",
     },
     { name: "Tử Vi", href: "/astrology", icon: Star, shortName: "Tử vi" },
-    { name: "Tài khoản", href: "/account", icon: User, shortName: "Tài khoản" },
+    { name: "Menu", href: "#", icon: Menu, shortName: "Menu", isMenu: true },
   ];
 
   return (
@@ -119,18 +119,10 @@ export default function Navigation() {
             const Icon = item.icon;
             const isActive = pathname === item.href;
             const isCenter = index === 2; // Center item (Âm lịch)
+            const isMenu = item.isMenu;
 
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex flex-col items-center justify-center transition-all duration-200 ${
-                  isCenter
-                    ? "w-16 h-16 rounded-full bg-emerald-600 dark:bg-emerald-500 text-white mx-2 -mt-4 shadow-lg"
-                    : "flex-1 py-2 px-1"
-                }`}
-                data-testid={`mobile-nav-${item.name.toLowerCase().replace(" ", "-")}`}
-              >
+            const navItemContent = (
+              <>
                 <Icon
                   className={`${
                     isCenter
@@ -151,6 +143,38 @@ export default function Navigation() {
                 >
                   {item.mobileName || item.shortName}
                 </span>
+              </>
+            );
+
+            if (isMenu) {
+              return (
+                <SettingsDrawer key={item.name}>
+                  <button
+                    className={`flex flex-col items-center justify-center transition-all duration-200 ${
+                      isCenter
+                        ? "w-16 h-16 rounded-full bg-emerald-600 dark:bg-emerald-500 text-white mx-2 -mt-4 shadow-lg"
+                        : "flex-1 py-2 px-1"
+                    }`}
+                    data-testid={`mobile-nav-${item.name.toLowerCase().replace(" ", "-")}`}
+                  >
+                    {navItemContent}
+                  </button>
+                </SettingsDrawer>
+              );
+            }
+
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`flex flex-col items-center justify-center transition-all duration-200 ${
+                  isCenter
+                    ? "w-16 h-16 rounded-full bg-emerald-600 dark:bg-emerald-500 text-white mx-2 -mt-4 shadow-lg"
+                    : "flex-1 py-2 px-1"
+                }`}
+                data-testid={`mobile-nav-${item.name.toLowerCase().replace(" ", "-")}`}
+              >
+                {navItemContent}
               </Link>
             );
           })}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, CalendarCheck, Star } from "lucide-react";
@@ -12,9 +12,29 @@ const getShortLunarDay = (lunarDay: string): string => {
 };
 
 export default function LunarCalendar() {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const calendarDays = generateCalendarDays(currentDate);
-  const todayInfo = getCurrentLunarInfo();
+  const [currentDate, setCurrentDate] = useState(() => {
+    // Use a fixed date to avoid hydration mismatch
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  });
+  const [todayInfo, setTodayInfo] = useState({
+    solarDate: '',
+    lunarDate: '',
+    canChi: '',
+    zodiacSign: '',
+    luckyHours: ''
+  });
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // Only run on client-side to avoid hydration mismatch
+    const now = new Date();
+    setCurrentDate(now);
+    setTodayInfo(getCurrentLunarInfo());
+    setMounted(true);
+  }, []);
+
+  const calendarDays = mounted ? generateCalendarDays(currentDate) : [];
 
   const navigateMonth = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate);
