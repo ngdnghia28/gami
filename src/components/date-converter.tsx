@@ -318,37 +318,39 @@ export default function DateConverter() {
                     </div>
                     <div>
                       <Label htmlFor="lunar-month">Tháng</Label>
-                      <Select
-                        value={lunarDate.month}
-                        onValueChange={(value) => setLunarDate(prev => ({ ...prev, month: value }))}
-                      >
-                        <SelectTrigger data-testid="select-lunar-month">
-                          <SelectValue placeholder="Chọn tháng âm" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {months.map((month) => (
-                            <SelectItem key={month.value} value={month.value}>
-                              {month.label} âm
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="lunar-leap-month"
-                        checked={lunarDate.isLeapMonth}
-                        onCheckedChange={(checked) => 
-                          setLunarDate(prev => ({ ...prev, isLeapMonth: !!checked }))
-                        }
-                        data-testid="checkbox-leap-month"
-                      />
-                      <Label 
-                        htmlFor="lunar-leap-month" 
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Tháng nhuận
-                      </Label>
+                      <div className="flex items-center space-x-3">
+                        <Select
+                          value={lunarDate.month}
+                          onValueChange={(value) => setLunarDate(prev => ({ ...prev, month: value }))}
+                        >
+                          <SelectTrigger data-testid="select-lunar-month" className="flex-1">
+                            <SelectValue placeholder="Chọn tháng âm" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {months.map((month) => (
+                              <SelectItem key={month.value} value={month.value}>
+                                {month.label} âm
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <div className="flex items-center space-x-2 whitespace-nowrap">
+                          <Checkbox
+                            id="lunar-leap-month"
+                            checked={lunarDate.isLeapMonth}
+                            onCheckedChange={(checked) => 
+                              setLunarDate(prev => ({ ...prev, isLeapMonth: !!checked }))
+                            }
+                            data-testid="checkbox-leap-month"
+                          />
+                          <Label 
+                            htmlFor="lunar-leap-month" 
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            Tháng nhuận
+                          </Label>
+                        </div>
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="lunar-year">Năm</Label>
