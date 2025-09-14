@@ -8,12 +8,24 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const tag = searchParams.get('tag');
-    const posts = await apiClient.getBlogPosts(tag || undefined);
+    const response = await apiClient.getBlogPosts(tag || undefined);
     
-    // Transform external API response to internal format
-    const transformedPosts = posts.map(post => blogPostAdapters.fromExternal(post));
-    
-    return NextResponse.json(transformedPosts);
+    // Handle both array format (from storage) and paginated format (from external API)
+    if (Array.isArray(response)) {
+      // Transform array response to internal format
+      const transformedPosts = response.map(post => blogPostAdapters.fromExternal(post));
+      return NextResponse.json(transformedPosts);
+    } else {
+      // Handle paginated response format
+      const transformedPosts = response.posts.map(post => blogPostAdapters.fromExternal(post));
+      return NextResponse.json({
+        posts: transformedPosts,
+        totalCount: response.totalCount,
+        page: response.page,
+        limit: response.limit,
+        totalPages: response.totalPages
+      });
+    }
   } catch (error) {
     const { error: errorMessage, status } = handleApiError(error, "Failed to fetch blog posts");
     return NextResponse.json({ message: errorMessage }, { status });

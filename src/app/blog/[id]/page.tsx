@@ -17,6 +17,14 @@ interface BlogPost {
   tags: string[];
   readTime: number;
   isPublished: boolean;
+  slug?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  seoKeywords?: string[];
+  focusKeyword?: string;
+  ogImage?: string;
+  ogDescription?: string;
+  canonicalUrl?: string;
 }
 
 // Fetch blog post from API

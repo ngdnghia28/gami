@@ -158,9 +158,9 @@ export class ApiClient {
   }
 
   // Blog API methods
-  async getBlogPosts(tag?: string): Promise<BlogPost[]> {
+  async getBlogPosts(tag?: string): Promise<BlogPost[] | { posts: BlogPost[], totalCount: number, page: number, limit: number, totalPages: number }> {
     const params = tag ? `?tag=${encodeURIComponent(tag)}` : '';
-    return this.request<BlogPost[]>(`/api/blog${params}`) as Promise<BlogPost[]>;
+    return this.request<BlogPost[] | { posts: BlogPost[], totalCount: number, page: number, limit: number, totalPages: number }>(`/api/blog${params}`) as Promise<BlogPost[] | { posts: BlogPost[], totalCount: number, page: number, limit: number, totalPages: number }>;
   }
 
   async getBlogPost(id: string): Promise<BlogPost> {

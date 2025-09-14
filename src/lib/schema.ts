@@ -78,6 +78,14 @@ export const blogPosts = pgTable("blog_posts", {
   tags: text("tags").array().notNull().default(sql`ARRAY[]::text[]`),
   readTime: integer("read_time").notNull(),
   isPublished: boolean("is_published").default(true),
+  slug: text("slug"),
+  metaTitle: text("meta_title"),
+  metaDescription: text("meta_description"),
+  seoKeywords: text("seo_keywords").array().default(sql`ARRAY[]::text[]`),
+  focusKeyword: text("focus_keyword"),
+  ogImage: text("og_image"),
+  ogDescription: text("og_description"),
+  canonicalUrl: text("canonical_url"),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({

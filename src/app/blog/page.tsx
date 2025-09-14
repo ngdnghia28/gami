@@ -18,6 +18,14 @@ interface BlogPost {
   tags: string[];
   readTime: number;
   isPublished: boolean;
+  slug?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  seoKeywords?: string[];
+  focusKeyword?: string;
+  ogImage?: string;
+  ogDescription?: string;
+  canonicalUrl?: string;
 }
 
 
@@ -36,7 +44,18 @@ export default function BlogPage() {
         if (!response.ok) {
           throw new Error('Failed to fetch blog posts');
         }
-        const posts: BlogPost[] = await response.json();
+        const data = await response.json();
+        
+        // Handle both array format and paginated format
+        let posts: BlogPost[];
+        if (Array.isArray(data)) {
+          posts = data;
+        } else if (data.posts && Array.isArray(data.posts)) {
+          posts = data.posts;
+        } else {
+          throw new Error('Invalid response format');
+        }
+        
         setBlogPosts(posts);
         
         // Extract unique categories from posts

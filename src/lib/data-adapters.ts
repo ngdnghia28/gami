@@ -54,7 +54,15 @@ export const blogPostAdapters = {
       category: external.category,
       tags: Array.isArray(external.tags) ? external.tags : [],
       readTime: external.readTime || 5,
-      isPublished: external.isPublished ?? true
+      isPublished: external.isPublished ?? true,
+      slug: external.slug || null,
+      metaTitle: external.metaTitle || null,
+      metaDescription: external.metaDescription || null,
+      seoKeywords: Array.isArray(external.seoKeywords) ? external.seoKeywords : [],
+      focusKeyword: external.focusKeyword || null,
+      ogImage: external.ogImage || null,
+      ogDescription: external.ogDescription || null,
+      canonicalUrl: external.canonicalUrl || null
     };
   },
 
@@ -68,7 +76,15 @@ export const blogPostAdapters = {
       category: internal.category || '',
       tags: internal.tags || [],
       readTime: internal.readTime || 5,
-      isPublished: internal.isPublished ?? true
+      isPublished: internal.isPublished ?? true,
+      slug: internal.slug || '',
+      metaTitle: internal.metaTitle || '',
+      metaDescription: internal.metaDescription || '',
+      seoKeywords: internal.seoKeywords || [],
+      focusKeyword: internal.focusKeyword || '',
+      ogImage: internal.ogImage || '',
+      ogDescription: internal.ogDescription || '',
+      canonicalUrl: internal.canonicalUrl || ''
     };
   }
 };
