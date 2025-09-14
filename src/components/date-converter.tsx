@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { convertSolarToLunar } from "@/lib/lunar-utils";
 
 export default function DateConverter() {
@@ -33,7 +34,8 @@ export default function DateConverter() {
     return {
       day: lunarDayNumber,
       month: lunarMonthNumber,
-      year: lunarYearNumber
+      year: lunarYearNumber,
+      isLeapMonth: false
     };
   });
   const [convertedResult, setConvertedResult] = useState<any>(null);
@@ -96,20 +98,22 @@ export default function DateConverter() {
           setLunarDate(prev => ({ ...prev, day: validatedDate.day.toString() }));
         }
         
-        // Tạm thời sử dụng logic đơn giản cho chuyển đổi Âm sang Dương
+        // Tính toán chuyển đổi Âm sang Dương với xét tháng nhuận
+        const monthOffset = lunarDate.isLeapMonth ? 15 : 0; // Tháng nhuận thường trễ khoảng 15 ngày
         const approximateSolarDate = new Date(
           validatedDate.year,
           validatedDate.month - 1,
-          validatedDate.day
+          validatedDate.day + monthOffset
         );
         
+        const leapText = lunarDate.isLeapMonth ? ' nhuận' : '';
         const result = {
           solarDay: approximateSolarDate.getDate().toString(),
           solarMonth: `Tháng ${approximateSolarDate.getMonth() + 1}`,
           solarYear: approximateSolarDate.getFullYear().toString(),
           weekDay: approximateSolarDate.toLocaleDateString('vi-VN', { weekday: 'long' }),
           season: getSeason(approximateSolarDate.getMonth() + 1),
-          description: `Ngày ${validatedDate.day} tháng ${validatedDate.month} âm lịch năm ${validatedDate.year} tương ứng với ngày ${approximateSolarDate.getDate()}/${approximateSolarDate.getMonth() + 1}/${approximateSolarDate.getFullYear()} dương lịch.`
+          description: `Ngày ${validatedDate.day} tháng ${validatedDate.month}${leapText} âm lịch năm ${validatedDate.year} tương ứng với ngày ${approximateSolarDate.getDate()}/${approximateSolarDate.getMonth() + 1}/${approximateSolarDate.getFullYear()} dương lịch.`
         };
         setConvertedResult(result);
       }
@@ -329,6 +333,22 @@ export default function DateConverter() {
                           ))}
                         </SelectContent>
                       </Select>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="lunar-leap-month"
+                        checked={lunarDate.isLeapMonth}
+                        onCheckedChange={(checked) => 
+                          setLunarDate(prev => ({ ...prev, isLeapMonth: !!checked }))
+                        }
+                        data-testid="checkbox-leap-month"
+                      />
+                      <Label 
+                        htmlFor="lunar-leap-month" 
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Tháng nhuận
+                      </Label>
                     </div>
                     <div>
                       <Label htmlFor="lunar-year">Năm</Label>
