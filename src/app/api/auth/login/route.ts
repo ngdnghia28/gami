@@ -24,10 +24,13 @@ export async function POST(request: NextRequest) {
       user: apiResponse.data?.user
     });
 
+    // Handle different response formats from backend
+    const userData = apiResponse.data.user || apiResponse.data;
+    
     // Create response with the data
     const response = NextResponse.json(
       { 
-        user: apiResponse.data.user,
+        user: userData,
         message: apiResponse.data.message || "Đăng nhập thành công"
       },
       { status: apiResponse.status }
