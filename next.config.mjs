@@ -5,6 +5,8 @@ const nextConfig = {
   experimental: {
     // turbopack: true, // Enable if needed, but basic config doesn't require detailed rules
   },
+  // Allow cross-origin requests from Replit dev environment
+  allowedDevOrigins: ['*.replit.dev'],
   async headers() {
     return [
       {
