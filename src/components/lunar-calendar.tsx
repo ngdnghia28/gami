@@ -263,10 +263,16 @@ export default function LunarCalendar() {
                   >
                     <div className="text-base md:text-lg font-semibold mb-0 md:mb-1">{day.date}</div>
                     {/* Mobile: Short lunar day only */}
-                    <div className="block md:hidden text-[10px] text-muted-foreground leading-tight">{getShortLunarDay(day.lunarDay)}</div>
+                    <div className={`block md:hidden text-[10px] leading-tight ${
+                      day.isToday ? 'text-primary-foreground' : 'text-muted-foreground'
+                    }`}>{getShortLunarDay(day.lunarDay)}</div>
                     {/* Desktop: Full lunar day */}
-                    <div className="hidden md:block text-xs text-muted-foreground leading-tight mb-1">{day.lunarDay}</div>
-                    <div className="hidden md:block text-xs text-secondary leading-tight">{day.zodiacAnimal}</div>
+                    <div className={`hidden md:block text-xs leading-tight mb-1 ${
+                      day.isToday ? 'text-primary-foreground' : 'text-muted-foreground'
+                    }`}>{day.lunarDay}</div>
+                    <div className={`hidden md:block text-xs leading-tight ${
+                      day.isToday ? 'text-primary-foreground' : 'text-secondary'
+                    }`}>{day.zodiacAnimal}</div>
                   </div>
                 );
               })}
