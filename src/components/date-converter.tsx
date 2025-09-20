@@ -1,25 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { apiClient, type LunarDate } from "@/lib/api-client";
-
-// Helper function to get zodiac animal from Can Chi
-const getZodiacAnimal = (dayName: string): string => {
-  // Extract the animal from the Can Chi day name
-  const chiPart = dayName.split(' ')[1] || dayName;
-  const animals: { [key: string]: string } = {
-    'Tý': 'Chuột', 'Sửu': 'Trâu', 'Dần': 'Hổ', 'Mão': 'Mèo',
-    'Thìn': 'Rồng', 'Tỵ': 'Rắn', 'Ngọ': 'Ngựa', 'Mùi': 'Dê',
-    'Thân': 'Khỉ', 'Dậu': 'Gà', 'Tuất': 'Chó', 'Hợi': 'Heo'
-  };
-  return animals[chiPart] || chiPart;
-};
+import { apiClient } from "@/lib/api-client";
+import moment from "moment";
+import { useState } from "react";
 
 export default function DateConverter() {
   const [activeTab, setActiveTab] = useState<'solar-to-lunar' | 'lunar-to-solar'>('solar-to-lunar');
@@ -84,7 +72,7 @@ export default function DateConverter() {
           
           // Create date string for API call
           const dateObj = new Date(validatedDate.year, validatedDate.month - 1, validatedDate.day);
-          const dateStr = dateObj.toISOString().split('T')[0];
+          const dateStr = moment(dateObj).format('YYYY-MM-DD');
           
           // Call API to get lunar date
           const lunarData = await apiClient.getLunarDateBySolar(dateStr);
@@ -93,10 +81,10 @@ export default function DateConverter() {
             lunarDay: lunarData.day <= 15 ? `Mùng ${lunarData.day}` : `${lunarData.day}`,
             lunarMonth: `Tháng ${lunarData.month}`,
             lunarYear: lunarData.year,
-            canChi: lunarData.dayName,
-            zodiacSign: getZodiacAnimal(lunarData.dayName),
+            dayName: lunarData.dayName,
+            zodiacSign: '',
             zodiacAnimal: lunarData.dayName,
-            season: getSeason(validatedDate.month),
+            tietKhi: lunarData.tietKhi,
             description: `Ngày ${validatedDate.day}/${validatedDate.month}/${validatedDate.year} dương lịch tương ứng với ngày ${lunarData.day <= 15 ? `Mùng ${lunarData.day}` : lunarData.day} tháng ${lunarData.month} năm ${lunarData.year} âm lịch.`
           };
           setConvertedResult(result);
@@ -108,7 +96,7 @@ export default function DateConverter() {
             canChi: 'Lỗi',
             zodiacSign: 'Lỗi',
             zodiacAnimal: 'Lỗi',
-            season: 'Lỗi',
+            tietKhi: 'Lỗi',
             description: 'Không thể chuyển đổi ngày này. Vui lòng thử lại.'
           });
         }
@@ -141,19 +129,12 @@ export default function DateConverter() {
           solarMonth: `Tháng ${approximateSolarDate.getMonth() + 1}`,
           solarYear: approximateSolarDate.getFullYear().toString(),
           weekDay: approximateSolarDate.toLocaleDateString('vi-VN', { weekday: 'long' }),
-          season: getSeason(approximateSolarDate.getMonth() + 1),
-          description: `Ngày ${validatedDate.day} tháng ${validatedDate.month}${leapText} âm lịch năm ${validatedDate.year} tương ứng với ngày ${approximateSolarDate.getDate()}/${approximateSolarDate.getMonth() + 1}/${approximateSolarDate.getFullYear()} dương lịch.`
+          tietKhi: '',
+          description: '',
         };
         setConvertedResult(result);
       }
     }
-  };
-
-  const getSeason = (month: number): string => {
-    if (month >= 12 || month <= 2) return 'Đông Chí';
-    if (month >= 3 && month <= 5) return 'Xuân Phân';
-    if (month >= 6 && month <= 8) return 'Hạ Chí';
-    return 'Thu Phân';
   };
 
   return (
@@ -283,12 +264,12 @@ export default function DateConverter() {
                             {convertedResult.canChi}
                           </span>
                         </div>
-                        <div className="flex justify-between">
+                        {/* <div className="flex justify-between">
                           <span className="text-muted-foreground">Cung hoàng đạo:</span>
                           <span className="font-semibold" data-testid="text-result-zodiac">
                             {convertedResult.zodiacSign}
                           </span>
-                        </div>
+                        </div> */}
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Con giáp:</span>
                           <span className="font-semibold" data-testid="text-result-animal">
@@ -298,7 +279,7 @@ export default function DateConverter() {
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Tiết khí:</span>
                           <span className="font-semibold" data-testid="text-result-season">
-                            {convertedResult.season}
+                            {convertedResult.tietKhi}
                           </span>
                         </div>
                       </div>

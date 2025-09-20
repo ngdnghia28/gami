@@ -1,5 +1,5 @@
 import type { ApiError } from './api-client';
-import type { BlogPost, Festival, LunarDate, AstrologyReading } from './api-client';
+import type { BlogPost, Festival, LunarDateInfo, AstrologyReading } from './api-client';
 import type { 
   BlogPost as InternalBlogPost, 
   Festival as InternalFestival, 
@@ -129,7 +129,7 @@ export const festivalAdapters = {
  */
 export const lunarDateAdapters = {
   // Transform external API response to internal format
-  fromExternal(external: LunarDate): InternalLunarDate {
+  fromExternal(external: LunarDateInfo): InternalLunarDate {
     return {
       id: external.id,
       solarDate: ensureDateString(external.solarDate) || new Date().toISOString().split('T')[0],

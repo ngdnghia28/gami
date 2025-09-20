@@ -6,7 +6,7 @@ import { spawn } from 'child_process';
 console.log('Starting Next.js development server...');
 
 // Run Next.js dev server
-const nextProcess = spawn('npx', ['next', 'dev', '--port', '5000', '--hostname', '0.0.0.0'], {
+const nextProcess = spawn('npx', ['next', 'dev', '--port', '8000', '--hostname', '0.0.0.0'], {
   cwd: process.cwd(),
   stdio: 'inherit',
   shell: true

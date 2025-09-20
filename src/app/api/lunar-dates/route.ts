@@ -4,17 +4,17 @@ import { apiClient, type ApiError } from '@/lib/api-client';
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const startDateStr = searchParams.get("startDateStr");
-    const endDateStr = searchParams.get("endDateStr");
+    const startDate = searchParams.get("startDate");
+    const endDate = searchParams.get("endDate");
 
-    if (!startDateStr || !endDateStr) {
+    if (!startDate || !endDate) {
       return NextResponse.json({
         status: 400,
         error: "Please check the params"
       }, { status: 400 });
     }
 
-    const lunarDates = await apiClient.getLunarDates(startDateStr, endDateStr);
+    const lunarDates = await apiClient.getLunarDates(startDate, endDate);
     return NextResponse.json(lunarDates);
   } catch (error) {
     console.error("Lunar dates fetch error:", error);

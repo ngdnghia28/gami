@@ -52,7 +52,7 @@ export interface Festival {
   isNationalHoliday: boolean;
 }
 
-export interface LunarDate {
+export interface LunarDateInfo {
   day: number;        // lunar day
   month: number;      // lunar month  
   year: number;       // lunar year
@@ -61,6 +61,12 @@ export interface LunarDate {
   dayName: string;    // Can Chi for the day
   monthName: string;  // Can Chi for the month
   yearName: string;   // Can Chi for the year
+}
+
+export interface LunarDetails extends LunarDateInfo {
+  gioHoangDao: string,
+  gioDauNgay: string,
+  tietKhi: string
 }
 
 export interface AstrologyReading {
@@ -255,12 +261,25 @@ export class ApiClient {
   }
 
   //#region Lunar Calendar API methods
-  async getLunarDates(startDateStr: string, endDateStr: string): Promise<LunarDate[]> {
-    return this.request<LunarDate[]>(`/api/lunar-dates?startDateStr=${startDateStr}&endDateStr=${endDateStr}`) as Promise<LunarDate[]>;
+  /**
+   * Get lunar dates by date range
+   * @param startDate format: YYYY-MM-DD
+   * @param endDate format: YYYY-MM-DD
+   * @param startDate 
+   * @param endDate 
+   * @returns 
+   */
+  async getLunarDates(startDate: string, endDate: string): Promise<LunarDateInfo[]> {
+    return this.request<LunarDateInfo[]>(`/api/lunar-dates?startDate=${startDate}&endDate=${endDate}`) as Promise<LunarDateInfo[]>;
   }
 
-  async getLunarDateBySolar(date: string): Promise<LunarDate> {
-    return this.request<LunarDate>(`/api/lunar-dates/${date}`) as Promise<LunarDate>;
+  /**
+   * Get lunar date by solar date
+   * @param date format: YYYY-MM-DD
+   * @returns 
+   */
+  async getLunarDateBySolar(date: string): Promise<LunarDetails> {
+    return this.request<LunarDetails>(`/api/lunar-dates/${date}`) as Promise<LunarDetails>;
   }
   //#endregion
 
