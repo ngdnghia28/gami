@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, CalendarCheck, Star } from "lucide-react";
-import { generateCalendarDays, getCurrentLunarInfo, convertSolarToLunar } from "@/lib/lunar-utils";
+import { convertSolarToLunar, generateCalendarDays, getCurrentLunarInfo } from "@/lib/lunar-utils";
 
 // Helper function to get short lunar day for mobile
 const getShortLunarDay = (lunarDay: string): string => {

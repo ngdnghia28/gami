@@ -7,7 +7,7 @@ export async function GET(
 ) {
   try {
     const { date } = await params;
-    const lunarDate = await apiClient.getLunarDate(date);
+    const lunarDate = await apiClient.getLunarDateBySolar(date);
     
     if (!lunarDate) {
       return NextResponse.json(

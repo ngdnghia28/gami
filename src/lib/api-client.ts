@@ -108,7 +108,7 @@ export class ApiClient {
     const url = `${this.baseURL}${endpoint}`;
     
     const config: RequestInit = {
-      credentials: 'include', // Include cookies for cross-origin requests
+      // credentials: 'include', // Include cookies for cross-origin requests
       mode: 'cors', // Explicitly set CORS mode
       headers: {
         'Content-Type': 'application/json',
@@ -175,7 +175,7 @@ export class ApiClient {
     return this.request<T>(endpoint, options, true) as Promise<ApiResponse<T>>;
   }
 
-  // Blog API methods
+  //#region Blog API methods
   async getBlogPosts(tag?: string): Promise<BlogPost[] | BlogPostsResponse> {
     const params = tag ? `?tag=${encodeURIComponent(tag)}` : '';
     return this.request<BlogPost[] | BlogPostsResponse>(`/api/blog${params}`) as Promise<BlogPost[] | BlogPostsResponse>;
@@ -208,8 +208,9 @@ export class ApiClient {
   async getBlogTags(): Promise<string[]> {
     return this.request<string[]>('/api/blog-tags') as Promise<string[]>;
   }
+  //#endregion
 
-  // Authentication API methods - return full response for cookie handling
+  //#region Authentication API methods - return full response for cookie handling
   async register(data: { name: string; email: string; password: string }): Promise<ApiResponse<{ user: User; message: string }>> {
     return this.requestWithResponse<{ user: User; message: string }>('/api/auth/register', {
       method: 'POST',
@@ -233,8 +234,9 @@ export class ApiClient {
   async getCurrentUser(): Promise<User> {
     return this.request<User>('/api/auth/me') as Promise<User>;
   }
+  //#endregion
 
-  // Festivals API methods
+  //#region Festivals API methods
   async getFestivals(): Promise<Festival[]> {
     return this.request<Festival[]>('/api/festivals') as Promise<Festival[]>;
   }
@@ -252,23 +254,17 @@ export class ApiClient {
     }) as Promise<void>;
   }
 
-  // Lunar Calendar API methods
-  async getLunarDates(): Promise<LunarDate[]> {
-    return this.request<LunarDate[]>('/api/lunar-dates') as Promise<LunarDate[]>;
+  //#region Lunar Calendar API methods
+  async getLunarDates(startDate: string, endDate: string): Promise<LunarDate[]> {
+    return this.request<LunarDate[]>(`/api/lunar-dates?startDate=${startDate}&endDate=${endDate}`) as Promise<LunarDate[]>;
   }
 
-  async getLunarDate(date: string): Promise<LunarDate> {
+  async getLunarDateBySolar(date: string): Promise<LunarDate> {
     return this.request<LunarDate>(`/api/lunar-dates/${date}`) as Promise<LunarDate>;
   }
+  //#endregion
 
-  async convertSolarToLunar(data: { solarDate: string }): Promise<LunarDate> {
-    return this.request<LunarDate>('/api/lunar-dates', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }) as Promise<LunarDate>;
-  }
-
-  // Astrology API methods
+  //#region Astrology API methods
   async getAstrologyReadings(): Promise<AstrologyReading[]> {
     return this.request<AstrologyReading[]>('/api/astrology') as Promise<AstrologyReading[]>;
   }
@@ -283,6 +279,7 @@ export class ApiClient {
       body: JSON.stringify(data),
     }) as Promise<AstrologyReading>;
   }
+  //#endregion
 
   // Health check
   async healthCheck(): Promise<{ status: string; timestamp: string }> {
