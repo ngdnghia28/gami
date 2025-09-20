@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { convertSolarToLunar } from "@/lib/lunar-utils";
+import { apiClient, type LunarDate } from "@/lib/api-client";
 
 export default function DateConverter() {
   const [activeTab, setActiveTab] = useState<'solar-to-lunar' | 'lunar-to-solar'>('solar-to-lunar');
@@ -21,20 +21,11 @@ export default function DateConverter() {
   });
   const [lunarDate, setLunarDate] = useState(() => {
     const today = new Date();
-    const currentLunar = convertSolarToLunar(today.getFullYear(), today.getMonth() + 1, today.getDate());
-    // Extract lunar day number from the formatted string
-    const lunarDayNumber = currentLunar.lunarDay.replace('Mùng ', '').replace(/\D/g, '');
-    // Extract lunar month number from the formatted string
-    const lunarMonthMatch = currentLunar.lunarMonth.match(/Tháng (\d+)/);
-    const lunarMonthNumber = lunarMonthMatch ? lunarMonthMatch[1] : '1';
-    // Extract lunar year number
-    const lunarYearMatch = currentLunar.lunarMonth.match(/Năm .+ (\d+)/);
-    const lunarYearNumber = lunarYearMatch ? lunarYearMatch[1] : today.getFullYear().toString();
     
     return {
-      day: lunarDayNumber,
-      month: lunarMonthNumber,
-      year: lunarYearNumber,
+      day: today.getDate().toString(),
+      month: (today.getMonth() + 1).toString(),
+      year: today.getFullYear().toString(),
       isLeapMonth: false
     };
   });
@@ -64,26 +55,51 @@ export default function DateConverter() {
     return { day, month, year };
   };
 
-  const handleConvert = () => {
+  const handleConvert = async () => {
     if (activeTab === 'solar-to-lunar') {
       if (solarDate.day && solarDate.month && solarDate.year) {
-        const validatedDate = validateAndAdjustDate(
-          parseInt(solarDate.day),
-          parseInt(solarDate.month),
-          parseInt(solarDate.year)
-        );
-        
-        // Update state if date was adjusted
-        if (validatedDate.day !== parseInt(solarDate.day)) {
-          setSolarDate(prev => ({ ...prev, day: validatedDate.day.toString() }));
+        try {
+          const validatedDate = validateAndAdjustDate(
+            parseInt(solarDate.day),
+            parseInt(solarDate.month),
+            parseInt(solarDate.year)
+          );
+          
+          // Update state if date was adjusted
+          if (validatedDate.day !== parseInt(solarDate.day)) {
+            setSolarDate(prev => ({ ...prev, day: validatedDate.day.toString() }));
+          }
+          
+          // Create date string for API call
+          const dateObj = new Date(validatedDate.year, validatedDate.month - 1, validatedDate.day);
+          const dateStr = dateObj.toISOString().split('T')[0];
+          
+          // Call API to get lunar date
+          const lunarData = await apiClient.getLunarDateBySolar(dateStr);
+          
+          const result = {
+            lunarDay: `${lunarData.lunarDay}`,
+            lunarMonth: `Tháng ${lunarData.lunarMonth}`,
+            lunarYear: lunarData.lunarYear,
+            canChi: lunarData.canChi,
+            zodiacSign: lunarData.zodiac,
+            zodiacAnimal: lunarData.canChi,
+            season: getSeason(validatedDate.month),
+            description: `Ngày ${validatedDate.day}/${validatedDate.month}/${validatedDate.year} dương lịch tương ứng với ngày ${lunarData.lunarDay} tháng ${lunarData.lunarMonth} năm ${lunarData.lunarYear} âm lịch.`
+          };
+          setConvertedResult(result);
+        } catch (error) {
+          console.error('Error converting solar to lunar:', error);
+          setConvertedResult({
+            lunarDay: 'Lỗi',
+            lunarMonth: 'Không thể chuyển đổi',
+            canChi: 'Lỗi',
+            zodiacSign: 'Lỗi',
+            zodiacAnimal: 'Lỗi',
+            season: 'Lỗi',
+            description: 'Không thể chuyển đổi ngày này. Vui lòng thử lại.'
+          });
         }
-        
-        const result = convertSolarToLunar(
-          validatedDate.year,
-          validatedDate.month,
-          validatedDate.day
-        );
-        setConvertedResult(result);
       }
     } else {
       if (lunarDate.day && lunarDate.month && lunarDate.year) {
@@ -98,8 +114,9 @@ export default function DateConverter() {
           setLunarDate(prev => ({ ...prev, day: validatedDate.day.toString() }));
         }
         
-        // Tính toán chuyển đổi Âm sang Dương với xét tháng nhuận
-        const monthOffset = lunarDate.isLeapMonth ? 15 : 0; // Tháng nhuận thường trễ khoảng 15 ngày
+        // Note: For lunar to solar conversion, we would need a different API endpoint
+        // For now, keeping the approximate calculation as a fallback
+        const monthOffset = lunarDate.isLeapMonth ? 15 : 0;
         const approximateSolarDate = new Date(
           validatedDate.year,
           validatedDate.month - 1,
