@@ -4,12 +4,22 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, CalendarCheck, Star } from "lucide-react";
-import { convertSolarToLunar, generateCalendarDays, getCurrentLunarInfo } from "@/lib/lunar-utils";
+import { apiClient, type LunarDate } from "@/lib/api-client";
 
 // Helper function to get short lunar day for mobile
 const getShortLunarDay = (lunarDay: string): string => {
   return lunarDay.replace('Mùng ', '');
 };
+
+// Updated interface to work with API
+export interface CalendarDay {
+  date: number;
+  lunarDay: string;
+  zodiacAnimal: string;
+  isToday: boolean;
+  isCurrentMonth: boolean;
+  canChi?: string;
+}
 
 export default function LunarCalendar() {
   const [currentDate, setCurrentDate] = useState(() => {
@@ -27,34 +37,179 @@ export default function LunarCalendar() {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [selectedDateInfo, setSelectedDateInfo] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
+  const [calendarDays, setCalendarDays] = useState<CalendarDay[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // API-based function to get current lunar info
+  const getCurrentLunarInfo = async () => {
+    try {
+      const today = new Date();
+      const dateStr = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+      const lunarData = await apiClient.getLunarDateBySolar(dateStr);
+      
+      return {
+        solarDate: today.toLocaleDateString('vi-VN'),
+        lunarDate: lunarData.lunarDate,
+        canChi: lunarData.canChi,
+        zodiacSign: lunarData.zodiac,
+        luckyHours: 'Tý, Dần, Mão' // This could be enhanced with API data
+      };
+    } catch (error) {
+      console.error('Error fetching current lunar info:', error);
+      return {
+        solarDate: new Date().toLocaleDateString('vi-VN'),
+        lunarDate: 'Đang tải...',
+        canChi: 'Đang tải...',
+        zodiacSign: 'Đang tải...',
+        luckyHours: 'Tý, Dần, Mão'
+      };
+    }
+  };
+
+  // API-based function to generate calendar days
+  const generateCalendarDays = async (currentDate: Date) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const today = new Date();
+      
+      // Get first day of month and number of days
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const daysInMonth = lastDay.getDate();
+      const startingDayOfWeek = firstDay.getDay();
+      
+      // Get previous month's last days
+      const prevMonth = new Date(year, month - 1, 0);
+      const daysInPrevMonth = prevMonth.getDate();
+      
+      // Create date range for API call
+      const startDate = new Date(year, month - 1, daysInPrevMonth - startingDayOfWeek + 1);
+      const endDate = new Date(year, month + 1, 42 - daysInMonth - startingDayOfWeek); // Full 6 weeks
+      
+      const startDateStr = startDate.toISOString().split('T')[0];
+      const endDateStr = endDate.toISOString().split('T')[0];
+      
+      // Fetch lunar dates from API
+      const lunarDates = await apiClient.getLunarDates(startDateStr, endDateStr);
+      
+      const days: CalendarDay[] = [];
+      
+      // Previous month days
+      for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+        const date = daysInPrevMonth - i;
+        const dateObj = new Date(year, month - 1, date);
+        const dateStr = dateObj.toISOString().split('T')[0];
+        const lunarInfo = lunarDates.find(ld => ld.solarDate === dateStr);
+        
+        days.push({
+          date,
+          lunarDay: lunarInfo ? `${lunarInfo.lunarDay}` : 'N/A',
+          zodiacAnimal: lunarInfo ? lunarInfo.canChi : 'N/A',
+          canChi: lunarInfo?.canChi,
+          isToday: false,
+          isCurrentMonth: false
+        });
+      }
+      
+      // Current month days
+      for (let date = 1; date <= daysInMonth; date++) {
+        const dateObj = new Date(year, month, date);
+        const dateStr = dateObj.toISOString().split('T')[0];
+        const lunarInfo = lunarDates.find(ld => ld.solarDate === dateStr);
+        const isToday = today.getFullYear() === year && 
+                       today.getMonth() === month && 
+                       today.getDate() === date;
+        
+        days.push({
+          date,
+          lunarDay: lunarInfo ? `${lunarInfo.lunarDay}` : 'N/A',
+          zodiacAnimal: lunarInfo ? lunarInfo.canChi : 'N/A',
+          canChi: lunarInfo?.canChi,
+          isToday,
+          isCurrentMonth: true
+        });
+      }
+      
+      // Next month days to fill grid
+      const remainingDays = 42 - days.length; // 6 weeks * 7 days
+      for (let date = 1; date <= remainingDays; date++) {
+        const dateObj = new Date(year, month + 1, date);
+        const dateStr = dateObj.toISOString().split('T')[0];
+        const lunarInfo = lunarDates.find(ld => ld.solarDate === dateStr);
+        
+        days.push({
+          date,
+          lunarDay: lunarInfo ? `${lunarInfo.lunarDay}` : 'N/A',
+          zodiacAnimal: lunarInfo ? lunarInfo.canChi : 'N/A',
+          canChi: lunarInfo?.canChi,
+          isToday: false,
+          isCurrentMonth: false
+        });
+      }
+      
+      setCalendarDays(days);
+    } catch (error) {
+      console.error('Error generating calendar days:', error);
+      setError('Không thể tải dữ liệu lịch');
+      setCalendarDays([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Only run on client-side to avoid hydration mismatch
     const now = new Date();
     setCurrentDate(now);
-    setTodayInfo(getCurrentLunarInfo());
     setMounted(true);
+    
+    // Load initial data
+    getCurrentLunarInfo().then(setTodayInfo);
+    generateCalendarDays(now);
   }, []);
 
-  const calendarDays = mounted ? generateCalendarDays(currentDate) : [];
+  // Update calendar when current date changes
+  useEffect(() => {
+    if (mounted) {
+      generateCalendarDays(currentDate);
+    }
+  }, [currentDate, mounted]);
 
-  const getSelectedDateInfo = (year: number, month: number, day: number) => {
-    const lunar = convertSolarToLunar(year, month, day);
-    const selectedDate = new Date(year, month - 1, day);
-    
-    return {
-      solarDate: selectedDate.toLocaleDateString('vi-VN'),
-      lunarDate: lunar.lunarDay + ' ' + lunar.lunarMonth,
-      canChi: lunar.canChi,
-      zodiacSign: lunar.zodiacSign,
-      luckyHours: 'Tý, Dần, Mão'
-    };
+  const getSelectedDateInfo = async (year: number, month: number, day: number) => {
+    try {
+      const selectedDate = new Date(year, month - 1, day);
+      const dateStr = selectedDate.toISOString().split('T')[0];
+      const lunarData = await apiClient.getLunarDateBySolar(dateStr);
+      
+      return {
+        solarDate: selectedDate.toLocaleDateString('vi-VN'),
+        lunarDate: lunarData.lunarDate,
+        canChi: lunarData.canChi,
+        zodiacSign: lunarData.zodiac,
+        luckyHours: 'Tý, Dần, Mão'
+      };
+    } catch (error) {
+      console.error('Error fetching selected date info:', error);
+      const selectedDate = new Date(year, month - 1, day);
+      return {
+        solarDate: selectedDate.toLocaleDateString('vi-VN'),
+        lunarDate: 'Đang tải...',
+        canChi: 'Đang tải...',
+        zodiacSign: 'Đang tải...',
+        luckyHours: 'Tý, Dần, Mão'
+      };
+    }
   };
 
-  const handleDayClick = (dayDate: number, isCurrentMonth: boolean) => {
+  const handleDayClick = async (dayDate: number, isCurrentMonth: boolean) => {
     if (isCurrentMonth) {
       setSelectedDay(dayDate);
-      const selectedInfo = getSelectedDateInfo(
+      const selectedInfo = await getSelectedDateInfo(
         currentDate.getFullYear(), 
         currentDate.getMonth() + 1, 
         dayDate
