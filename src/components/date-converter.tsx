@@ -9,6 +9,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { apiClient, type LunarDate } from "@/lib/api-client";
 
+// Helper function to get zodiac animal from Can Chi
+const getZodiacAnimal = (dayName: string): string => {
+  // Extract the animal from the Can Chi day name
+  const chiPart = dayName.split(' ')[1] || dayName;
+  const animals: { [key: string]: string } = {
+    'Tý': 'Chuột', 'Sửu': 'Trâu', 'Dần': 'Hổ', 'Mão': 'Mèo',
+    'Thìn': 'Rồng', 'Tỵ': 'Rắn', 'Ngọ': 'Ngựa', 'Mùi': 'Dê',
+    'Thân': 'Khỉ', 'Dậu': 'Gà', 'Tuất': 'Chó', 'Hợi': 'Heo'
+  };
+  return animals[chiPart] || chiPart;
+};
+
 export default function DateConverter() {
   const [activeTab, setActiveTab] = useState<'solar-to-lunar' | 'lunar-to-solar'>('solar-to-lunar');
   const [solarDate, setSolarDate] = useState(() => {
@@ -78,14 +90,14 @@ export default function DateConverter() {
           const lunarData = await apiClient.getLunarDateBySolar(dateStr);
           
           const result = {
-            lunarDay: `${lunarData.lunarDay}`,
-            lunarMonth: `Tháng ${lunarData.lunarMonth}`,
-            lunarYear: lunarData.lunarYear,
-            canChi: lunarData.canChi,
-            zodiacSign: lunarData.zodiac,
-            zodiacAnimal: lunarData.canChi,
+            lunarDay: lunarData.day <= 15 ? `Mùng ${lunarData.day}` : `${lunarData.day}`,
+            lunarMonth: `Tháng ${lunarData.month}`,
+            lunarYear: lunarData.year,
+            canChi: lunarData.dayName,
+            zodiacSign: getZodiacAnimal(lunarData.dayName),
+            zodiacAnimal: lunarData.dayName,
             season: getSeason(validatedDate.month),
-            description: `Ngày ${validatedDate.day}/${validatedDate.month}/${validatedDate.year} dương lịch tương ứng với ngày ${lunarData.lunarDay} tháng ${lunarData.lunarMonth} năm ${lunarData.lunarYear} âm lịch.`
+            description: `Ngày ${validatedDate.day}/${validatedDate.month}/${validatedDate.year} dương lịch tương ứng với ngày ${lunarData.day <= 15 ? `Mùng ${lunarData.day}` : lunarData.day} tháng ${lunarData.month} năm ${lunarData.year} âm lịch.`
           };
           setConvertedResult(result);
         } catch (error) {

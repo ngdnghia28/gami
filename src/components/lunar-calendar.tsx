@@ -11,6 +11,28 @@ const getShortLunarDay = (lunarDay: string): string => {
   return lunarDay.replace('Mùng ', '');
 };
 
+// Helper functions to format API response data
+const formatLunarDay = (day: number): string => {
+  return day <= 15 ? `Mùng ${day}` : `${day}`;
+};
+
+const formatLunarDate = (lunarData: LunarDate): string => {
+  const formattedDay = formatLunarDay(lunarData.day);
+  const leapText = lunarData.isLeap ? ' nhuận' : '';
+  return `${formattedDay} tháng ${lunarData.month}${leapText} năm ${lunarData.year}`;
+};
+
+const getZodiacAnimal = (dayName: string): string => {
+  // Extract the animal from the Can Chi day name
+  const chiPart = dayName.split(' ')[1] || dayName;
+  const animals: { [key: string]: string } = {
+    'Tý': 'Chuột', 'Sửu': 'Trâu', 'Dần': 'Hổ', 'Mão': 'Mèo',
+    'Thìn': 'Rồng', 'Tỵ': 'Rắn', 'Ngọ': 'Ngựa', 'Mùi': 'Dê',
+    'Thân': 'Khỉ', 'Dậu': 'Gà', 'Tuất': 'Chó', 'Hợi': 'Heo'
+  };
+  return animals[chiPart] || chiPart;
+};
+
 // Updated interface to work with API
 export interface CalendarDay {
   date: number;
@@ -50,9 +72,9 @@ export default function LunarCalendar() {
       
       return {
         solarDate: today.toLocaleDateString('vi-VN'),
-        lunarDate: lunarData.lunarDate,
-        canChi: lunarData.canChi,
-        zodiacSign: lunarData.zodiac,
+        lunarDate: formatLunarDate(lunarData),
+        canChi: lunarData.dayName,
+        zodiacSign: getZodiacAnimal(lunarData.dayName),
         luckyHours: 'Tý, Dần, Mão' // This could be enhanced with API data
       };
     } catch (error) {
@@ -97,20 +119,36 @@ export default function LunarCalendar() {
       // Fetch lunar dates from API
       const lunarDates = await apiClient.getLunarDates(startDateStr, endDateStr);
       
+      // Create a map of solar dates to lunar data for faster lookup
+      const lunarDateMap = new Map<string, LunarDate>();
+      lunarDates.forEach(ld => {
+        // Since the API doesn't return solarDate, we need to calculate it based on the range
+        // For now, we'll handle individual date lookups in the fallback
+        const key = `${ld.year}-${ld.month}-${ld.day}`;
+        lunarDateMap.set(key, ld);
+      });
+      
       const days: CalendarDay[] = [];
       
       // Previous month days
       for (let i = startingDayOfWeek - 1; i >= 0; i--) {
         const date = daysInPrevMonth - i;
         const dateObj = new Date(year, month - 1, date);
-        const dateStr = dateObj.toISOString().split('T')[0];
-        const lunarInfo = lunarDates.find(ld => ld.solarDate === dateStr);
+        
+        // Try to get individual lunar date if range API doesn't work
+        let lunarInfo: LunarDate | null = null;
+        try {
+          const dateStr = dateObj.toISOString().split('T')[0];
+          lunarInfo = await apiClient.getLunarDateBySolar(dateStr);
+        } catch (error) {
+          console.warn('Could not fetch lunar date for', dateObj);
+        }
         
         days.push({
           date,
-          lunarDay: lunarInfo ? `${lunarInfo.lunarDay}` : 'N/A',
-          zodiacAnimal: lunarInfo ? lunarInfo.canChi : 'N/A',
-          canChi: lunarInfo?.canChi,
+          lunarDay: lunarInfo ? formatLunarDay(lunarInfo.day) : 'N/A',
+          zodiacAnimal: lunarInfo ? lunarInfo.dayName : 'N/A',
+          canChi: lunarInfo?.dayName,
           isToday: false,
           isCurrentMonth: false
         });
@@ -119,17 +157,24 @@ export default function LunarCalendar() {
       // Current month days
       for (let date = 1; date <= daysInMonth; date++) {
         const dateObj = new Date(year, month, date);
-        const dateStr = dateObj.toISOString().split('T')[0];
-        const lunarInfo = lunarDates.find(ld => ld.solarDate === dateStr);
         const isToday = today.getFullYear() === year && 
                        today.getMonth() === month && 
                        today.getDate() === date;
         
+        // Try to get individual lunar date if range API doesn't work
+        let lunarInfo: LunarDate | null = null;
+        try {
+          const dateStr = dateObj.toISOString().split('T')[0];
+          lunarInfo = await apiClient.getLunarDateBySolar(dateStr);
+        } catch (error) {
+          console.warn('Could not fetch lunar date for', dateObj);
+        }
+        
         days.push({
           date,
-          lunarDay: lunarInfo ? `${lunarInfo.lunarDay}` : 'N/A',
-          zodiacAnimal: lunarInfo ? lunarInfo.canChi : 'N/A',
-          canChi: lunarInfo?.canChi,
+          lunarDay: lunarInfo ? formatLunarDay(lunarInfo.day) : 'N/A',
+          zodiacAnimal: lunarInfo ? lunarInfo.dayName : 'N/A',
+          canChi: lunarInfo?.dayName,
           isToday,
           isCurrentMonth: true
         });
@@ -139,14 +184,21 @@ export default function LunarCalendar() {
       const remainingDays = 42 - days.length; // 6 weeks * 7 days
       for (let date = 1; date <= remainingDays; date++) {
         const dateObj = new Date(year, month + 1, date);
-        const dateStr = dateObj.toISOString().split('T')[0];
-        const lunarInfo = lunarDates.find(ld => ld.solarDate === dateStr);
+        
+        // Try to get individual lunar date if range API doesn't work
+        let lunarInfo: LunarDate | null = null;
+        try {
+          const dateStr = dateObj.toISOString().split('T')[0];
+          lunarInfo = await apiClient.getLunarDateBySolar(dateStr);
+        } catch (error) {
+          console.warn('Could not fetch lunar date for', dateObj);
+        }
         
         days.push({
           date,
-          lunarDay: lunarInfo ? `${lunarInfo.lunarDay}` : 'N/A',
-          zodiacAnimal: lunarInfo ? lunarInfo.canChi : 'N/A',
-          canChi: lunarInfo?.canChi,
+          lunarDay: lunarInfo ? formatLunarDay(lunarInfo.day) : 'N/A',
+          zodiacAnimal: lunarInfo ? lunarInfo.dayName : 'N/A',
+          canChi: lunarInfo?.dayName,
           isToday: false,
           isCurrentMonth: false
         });
@@ -188,9 +240,9 @@ export default function LunarCalendar() {
       
       return {
         solarDate: selectedDate.toLocaleDateString('vi-VN'),
-        lunarDate: lunarData.lunarDate,
-        canChi: lunarData.canChi,
-        zodiacSign: lunarData.zodiac,
+        lunarDate: formatLunarDate(lunarData),
+        canChi: lunarData.dayName,
+        zodiacSign: getZodiacAnimal(lunarData.dayName),
         luckyHours: 'Tý, Dần, Mão'
       };
     } catch (error) {

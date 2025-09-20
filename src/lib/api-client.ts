@@ -53,14 +53,14 @@ export interface Festival {
 }
 
 export interface LunarDate {
-  id: string;
-  solarDate: string;
-  lunarDate: string;
-  canChi: string;
-  zodiac: string;
-  lunarMonth: number;
-  lunarDay: number;
-  lunarYear: number;
+  day: number;        // lunar day
+  month: number;      // lunar month  
+  year: number;       // lunar year
+  isLeap: boolean;    // whether it's a leap month
+  jd: number;         // Julian day number
+  dayName: string;    // Can Chi for the day
+  monthName: string;  // Can Chi for the month
+  yearName: string;   // Can Chi for the year
 }
 
 export interface AstrologyReading {
@@ -255,8 +255,8 @@ export class ApiClient {
   }
 
   //#region Lunar Calendar API methods
-  async getLunarDates(startDate: string, endDate: string): Promise<LunarDate[]> {
-    return this.request<LunarDate[]>(`/api/lunar-dates?startDate=${startDate}&endDate=${endDate}`) as Promise<LunarDate[]>;
+  async getLunarDates(startDateStr: string, endDateStr: string): Promise<LunarDate[]> {
+    return this.request<LunarDate[]>(`/api/lunar-dates?startDateStr=${startDateStr}&endDateStr=${endDateStr}`) as Promise<LunarDate[]>;
   }
 
   async getLunarDateBySolar(date: string): Promise<LunarDate> {
