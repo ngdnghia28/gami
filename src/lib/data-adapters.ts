@@ -1,10 +1,8 @@
-import type { ApiError } from './api-client';
-import type { BlogPost, Festival, LunarDateInfo, AstrologyReading } from './api-client';
-import type { 
-  BlogPost as InternalBlogPost, 
-  Festival as InternalFestival, 
-  LunarDate as InternalLunarDate, 
-  AstrologyReading as InternalAstrologyReading 
+import type { ApiError, AstrologyReading, BlogPost, Festival } from './api-client';
+import type {
+  AstrologyReading as InternalAstrologyReading,
+  BlogPost as InternalBlogPost,
+  Festival as InternalFestival
 } from './schema';
 
 /**
@@ -120,32 +118,6 @@ export const festivalAdapters = {
       category: 'traditional',
       region: undefined,
       isNationalHoliday: internal.isImportant || false
-    };
-  }
-};
-
-/**
- * Lunar Date Adapters
- */
-export const lunarDateAdapters = {
-  // Transform external API response to internal format
-  fromExternal(external: LunarDateInfo): InternalLunarDate {
-    return {
-      id: external.id,
-      solarDate: ensureDateString(external.solarDate) || new Date().toISOString().split('T')[0],
-      lunarDay: external.lunarDay || 1,
-      lunarMonth: external.lunarMonth || 1,
-      lunarYear: external.lunarYear || new Date().getFullYear(),
-      canChi: external.canChi || '',
-      zodiacAnimal: external.zodiac || '',
-      isLeapMonth: false // External API doesn't seem to provide this
-    };
-  },
-
-  // Transform internal format to external API format
-  toExternal(internal: { solarDate: string }): { solarDate: string } {
-    return {
-      solarDate: internal.solarDate
     };
   }
 };
